@@ -8,7 +8,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Trash
 interface TrashDao {
 
     @Query("SELECT * FROM trash")
-    suspend fun liveTrash(): LiveData<List<Trash>>
+    fun liveTrash(): LiveData<List<Trash>>
 
     @Query("SELECT * FROM trash")
     suspend fun allTrash(): List<Trash>
@@ -17,7 +17,7 @@ interface TrashDao {
     suspend fun findTrashById(id: Int): Trash
 
     @Query("SELECT * FROM trash WHERE id =:id")
-    suspend fun findTrashByIdLive(id: Int): LiveData<Trash>
+    fun findTrashByIdLive(id: Int): LiveData<Trash>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addTrash(trash: Trash)

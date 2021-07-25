@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import com.poetcodes.googlekeepclone.repository.database.converters.ImagesTypeConverter
+import com.poetcodes.googlekeepclone.repository.database.converters.LabelTypeConverter
 import com.poetcodes.googlekeepclone.repository.models.Images
 
 @Entity(tableName = "notes")
@@ -19,4 +20,6 @@ data class Note(
     @ColumnInfo(name = "image") var image: String?,
     @ColumnInfo(name = "images") @TypeConverters(ImagesTypeConverter::class) var images: Images?,
     @ColumnInfo(name = "deletedAt") var deletedAt: String?,
+    @ColumnInfo(name = "label") @TypeConverters(LabelTypeConverter::class) var label: Label?,
+    @ColumnInfo(name = "backgroundColor") var backgroundColor: String?
 )

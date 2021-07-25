@@ -8,7 +8,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Draft
 interface DraftDao {
 
     @Query("SELECT * FROM drafts")
-    suspend fun liveDrafts(): LiveData<List<Draft>>
+    fun liveDrafts(): LiveData<List<Draft>>
 
     @Query("SELECT * FROM drafts")
     suspend fun allDrafts(): List<Draft>
@@ -17,7 +17,7 @@ interface DraftDao {
     suspend fun findDraftById(id: Int): Draft
 
     @Query("SELECT * FROM drafts WHERE id =:id")
-    suspend fun findDraftByIdLive(id: Int): LiveData<Draft>
+    fun findDraftByIdLive(id: Int): LiveData<Draft>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addDraft(draft: Draft)

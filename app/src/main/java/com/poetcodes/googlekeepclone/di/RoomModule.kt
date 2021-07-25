@@ -3,10 +3,7 @@ package com.poetcodes.googlekeepclone.di
 import android.content.Context
 import androidx.room.Room
 import com.poetcodes.googlekeepclone.repository.database.AppDatabase
-import com.poetcodes.googlekeepclone.repository.database.dao.ArchiveDao
-import com.poetcodes.googlekeepclone.repository.database.dao.DraftDao
-import com.poetcodes.googlekeepclone.repository.database.dao.NoteDao
-import com.poetcodes.googlekeepclone.repository.database.dao.TrashDao
+import com.poetcodes.googlekeepclone.repository.database.dao.*
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import dagger.Module
 import dagger.Provides
@@ -52,6 +49,12 @@ class RoomModule {
     @Provides
     fun provideTrashDao(appDatabase: AppDatabase): TrashDao {
         return appDatabase.trashDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLabelDao(appDatabase: AppDatabase): LabelDao {
+        return appDatabase.labelDao()
     }
 
 }

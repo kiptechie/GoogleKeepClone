@@ -3,6 +3,7 @@ package com.poetcodes.googlekeepclone.utils;
 import com.poetcodes.googlekeepclone.repository.models.Images;
 import com.poetcodes.googlekeepclone.repository.models.NoteEssentials;
 import com.poetcodes.googlekeepclone.repository.models.entities.Archive;
+import com.poetcodes.googlekeepclone.repository.models.entities.Label;
 import com.poetcodes.googlekeepclone.repository.models.entities.Note;
 import com.poetcodes.googlekeepclone.repository.models.entities.Trash;
 
@@ -22,7 +23,9 @@ public class NoteEntityUtil {
                 noteEssentials.getUpdatedAt(),
                 builder.image,
                 builder.images,
-                builder.deletedAt
+                builder.deletedAt,
+                builder.label,
+                builder.backgroundColor
         );
     }
 
@@ -35,13 +38,15 @@ public class NoteEntityUtil {
                 note.getUpdatedAt(),
                 note.getImage(),
                 note.getImages(),
-                note.getDeletedAt()
+                note.getDeletedAt(),
+                note.getLabel(),
+                note.getBackgroundColor()
         );
     }
 
     public NoteEntityUtil(@NotNull Trash trash) {
         Note mNote = trash.getNote();
-        this.note = new Note(
+        note = new Note(
                 null,
                 mNote.getTitle(),
                 mNote.getDescription(),
@@ -49,13 +54,15 @@ public class NoteEntityUtil {
                 mNote.getUpdatedAt(),
                 mNote.getImage(),
                 mNote.getImages(),
-                null
+                null,
+                mNote.getLabel(),
+                mNote.getBackgroundColor()
         );
     }
 
     public NoteEntityUtil(@NotNull Archive archive) {
         Note mNote = archive.getNote();
-        this.note = new Note(
+        note = new Note(
                 null,
                 mNote.getTitle(),
                 mNote.getDescription(),
@@ -63,19 +70,32 @@ public class NoteEntityUtil {
                 mNote.getUpdatedAt(),
                 mNote.getImage(),
                 mNote.getImages(),
-                mNote.getDeletedAt()
+                mNote.getDeletedAt(),
+                mNote.getLabel(),
+                mNote.getBackgroundColor()
         );
     }
 
     public static class Builder {
 
         private NoteEssentials noteEssentials;
-        private String image, deletedAt;
+        private String image, deletedAt, backgroundColor;
         private Images images;
+        private Label label;
 
         @NotNull
         public static Builder newInstance() {
             return new Builder();
+        }
+
+        public Builder withLabel(Label label) {
+            this.label = label;
+            return this;
+        }
+
+        public Builder withBackgroundColor(String backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
         }
 
         @NotNull

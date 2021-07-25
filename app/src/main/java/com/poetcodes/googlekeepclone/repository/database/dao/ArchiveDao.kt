@@ -8,7 +8,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Archive
 interface ArchiveDao {
 
     @Query("SELECT * FROM archives")
-    suspend fun liveArchives(): LiveData<List<Archive>>
+    fun liveArchives(): LiveData<List<Archive>>
 
     @Query("SELECT * FROM archives")
     suspend fun allArchives(): List<Archive>
@@ -17,7 +17,7 @@ interface ArchiveDao {
     suspend fun findArchiveById(id: Int): Archive
 
     @Query("SELECT * FROM archives WHERE id =:id")
-    suspend fun findArchiveByIdLive(id: Int): LiveData<Archive>
+    fun findArchiveByIdLive(id: Int): LiveData<Archive>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addArchive(archive: Archive)

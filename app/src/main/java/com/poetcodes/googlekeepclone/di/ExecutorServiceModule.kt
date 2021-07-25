@@ -1,27 +1,41 @@
 package com.poetcodes.googlekeepclone.di
 
+import com.poetcodes.googlekeepclone.repository.models.MultipleThreads
+import com.poetcodes.googlekeepclone.repository.models.SingleThread
+import com.poetcodes.googlekeepclone.utils.MyExecutors
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class ExecutorServiceModule {
+object ExecutorServiceModule {
 
     @Singleton
     @Provides
-    fun withSingleThread(): ExecutorService {
-        return Executors.newSingleThreadExecutor()
+    fun provideExecutors(
+        singleThread: SingleThread,
+        multipleThreads: MultipleThreads
+    ): MyExecutors {
+        return MyExecutors(
+            singleThread.thread,
+            multipleThreads.threads
+        )
     }
 
     @Singleton
     @Provides
-    fun withMultipleThreads(): ExecutorService {
-        return Executors.newCachedThreadPool()
+    fun provideSingleThread(): SingleThread {
+        return SingleThread(Executors.newSingleThreadExecutor())
+    }
+
+    @Singleton
+    @Provides
+    fun provideMultipleThreads(): MultipleThreads {
+        return MultipleThreads(Executors.newCachedThreadPool())
     }
 
 }

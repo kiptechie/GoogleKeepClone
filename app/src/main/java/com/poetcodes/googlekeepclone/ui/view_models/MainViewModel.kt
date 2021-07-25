@@ -1,15 +1,12 @@
 package com.poetcodes.googlekeepclone.ui.view_models
 
 import androidx.lifecycle.*
-import com.poetcodes.googlekeepclone.di.ExecutorServiceModule
 import com.poetcodes.googlekeepclone.repository.DataState
 import com.poetcodes.googlekeepclone.repository.MainRepository
-import com.poetcodes.googlekeepclone.repository.models.entities.Archive
-import com.poetcodes.googlekeepclone.repository.models.entities.Draft
-import com.poetcodes.googlekeepclone.repository.models.entities.Note
-import com.poetcodes.googlekeepclone.repository.models.entities.Trash
+import com.poetcodes.googlekeepclone.repository.models.entities.*
 import com.poetcodes.googlekeepclone.ui.MainStateEvent
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
+import com.poetcodes.googlekeepclone.utils.MyExecutors
 import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -21,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val mainRepository: MainRepository,
-    private val executorServiceModule: ExecutorServiceModule,
+    private val myExecutors: MyExecutors,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -37,11 +34,14 @@ class MainViewModel @Inject constructor(
     private val _trashDataState: MutableLiveData<DataState<List<Trash>>> = MutableLiveData()
     val trashDataState: LiveData<DataState<List<Trash>>> get() = _trashDataState
 
+    private val _labelDataState: MutableLiveData<DataState<List<Label>>> = MutableLiveData()
+    val labelDataState: LiveData<DataState<List<Label>>> get() = _labelDataState
+
     fun setStateEvent(mainStateEvent: MainStateEvent) {
         viewModelScope.launch {
             when (mainStateEvent) {
 
-                is MainStateEvent.FetchNotesEvents -> {
+                is MainStateEvent.NoteEvents -> {
                     mainRepository.fetchNotes()
                         .onEach { noteDataState ->
                             _notesDataState.value = noteDataState
@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
                         .launchIn(viewModelScope)
                 }
 
-                is MainStateEvent.FetchArchivesEvents -> {
+                is MainStateEvent.ArchiveEvents -> {
                     mainRepository.fetchArchives()
                         .onEach { archiveDataState ->
                             _archivesDataState.value = archiveDataState
@@ -57,7 +57,7 @@ class MainViewModel @Inject constructor(
                         .launchIn(viewModelScope)
                 }
 
-                is MainStateEvent.FetchDraftsEvents -> {
+                is MainStateEvent.DraftEvents -> {
                     mainRepository.fetchDrafts()
                         .onEach { draftDataState ->
                             _draftsDataState.value = draftDataState
@@ -65,10 +65,18 @@ class MainViewModel @Inject constructor(
                         .launchIn(viewModelScope)
                 }
 
-                is MainStateEvent.FetchTrashEvents -> {
+                is MainStateEvent.TrashEvents -> {
                     mainRepository.fetchTrash()
                         .onEach { trashDataState ->
                             _trashDataState.value = trashDataState
+                        }
+                        .launchIn(viewModelScope)
+                }
+
+                is MainStateEvent.LabelEvents -> {
+                    mainRepository.fetchLabels()
+                        .onEach { labelDataState ->
+                            _labelDataState.value = labelDataState
                         }
                         .launchIn(viewModelScope)
                 }
@@ -80,17 +88,53 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun addLabel(label: Label) {
+        myExecutors.withSingleThread().submit {
+            viewModelScope.launch {
+                mainRepository.addLabel(label)
+                setStateEvent(MainStateEvent.LabelEvents)
+            }
+        }
+    }
+
+    fun updateLabel(label: Label) {
+        myExecutors.withSingleThread().submit {
+            viewModelScope.launch {
+                mainRepository.updateLabel(label)
+                setStateEvent(MainStateEvent.LabelEvents)
+            }
+        }
+    }
+
+    fun deleteLabel(label: Label) {
+        myExecutors.withSingleThread().submit {
+            viewModelScope.launch {
+                mainRepository.deleteLabel(label)
+                setStateEvent(MainStateEvent.LabelEvents)
+            }
+        }
+    }
+
+    fun deleteAllLabels() {
+        myExecutors.withSingleThread().submit {
+            viewModelScope.launch {
+                mainRepository.deleteAllLabels()
+                setStateEvent(MainStateEvent.LabelEvents)
+            }
+        }
+    }
+
     fun addNote(note: Note) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.addNote(note)
-                setStateEvent(MainStateEvent.FetchNotesEvents)
+                setStateEvent(MainStateEvent.NoteEvents)
             }
         }
     }
 
     fun deleteNote(note: Note) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteNote(note)
                 val noteEntityUtil = NoteEntityUtil(note)
@@ -103,13 +147,13 @@ class MainViewModel @Inject constructor(
                     deletedNote
                 )
                 addTrash(trash)
-                setStateEvent(MainStateEvent.FetchNotesEvents)
+                setStateEvent(MainStateEvent.NoteEvents)
             }
         }
     }
 
     fun restoreNote(trash: Trash) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 val noteEntityUtil = NoteEntityUtil(trash)
                 val noteToRestore = noteEntityUtil.note
@@ -120,25 +164,25 @@ class MainViewModel @Inject constructor(
     }
 
     fun updateNote(note: Note) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.updateNote(note)
-                setStateEvent(MainStateEvent.FetchNotesEvents)
+                setStateEvent(MainStateEvent.NoteEvents)
             }
         }
     }
 
     fun deleteAllNotes() {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteAllNotes()
-                setStateEvent(MainStateEvent.FetchNotesEvents)
+                setStateEvent(MainStateEvent.NoteEvents)
             }
         }
     }
 
     fun addArchive(archive: Archive) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.addArchive(archive)
                 val noteEntityUtil = NoteEntityUtil(archive)
@@ -146,110 +190,110 @@ class MainViewModel @Inject constructor(
                 val dateNow = Date(System.currentTimeMillis())
                 archivedNote.updatedAt = HelpersUtil.dateMapper.toString(dateNow)
                 deleteNote(archivedNote)
-                setStateEvent(MainStateEvent.FetchArchivesEvents)
+                setStateEvent(MainStateEvent.ArchiveEvents)
             }
         }
     }
 
     fun restoreArchive(archive: Archive) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 val noteEntityUtil = NoteEntityUtil(archive)
                 val archivedNote = noteEntityUtil.note
                 val dateNow = Date(System.currentTimeMillis())
                 archivedNote.updatedAt = HelpersUtil.dateMapper.toString(dateNow)
                 addNote(archivedNote)
-                setStateEvent(MainStateEvent.FetchArchivesEvents)
+                setStateEvent(MainStateEvent.ArchiveEvents)
             }
         }
     }
 
     fun deleteArchive(archive: Archive) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteArchive(archive)
-                setStateEvent(MainStateEvent.FetchArchivesEvents)
+                setStateEvent(MainStateEvent.ArchiveEvents)
             }
         }
     }
 
     fun updateArchive(archive: Archive) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.updateArchive(archive)
-                setStateEvent(MainStateEvent.FetchArchivesEvents)
+                setStateEvent(MainStateEvent.ArchiveEvents)
             }
         }
     }
 
     fun deleteAllArchives() {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteAllArchives()
-                setStateEvent(MainStateEvent.FetchArchivesEvents)
+                setStateEvent(MainStateEvent.ArchiveEvents)
             }
         }
     }
 
     fun addDraft(draft: Draft) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.addDraft(draft)
-                setStateEvent(MainStateEvent.FetchDraftsEvents)
+                setStateEvent(MainStateEvent.DraftEvents)
             }
         }
     }
 
     fun deleteDraft(draft: Draft) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteDraft(draft)
-                setStateEvent(MainStateEvent.FetchDraftsEvents)
+                setStateEvent(MainStateEvent.DraftEvents)
             }
         }
     }
 
     fun updateDraft(draft: Draft) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.updateDraft(draft)
-                setStateEvent(MainStateEvent.FetchDraftsEvents)
+                setStateEvent(MainStateEvent.DraftEvents)
             }
         }
     }
 
     fun deleteAllDrafts() {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteAllDrafts()
-                setStateEvent(MainStateEvent.FetchDraftsEvents)
+                setStateEvent(MainStateEvent.DraftEvents)
             }
         }
     }
 
     private fun addTrash(trash: Trash) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.addTrash(trash)
-                setStateEvent(MainStateEvent.FetchTrashEvents)
+                setStateEvent(MainStateEvent.TrashEvents)
             }
         }
     }
 
     fun deleteTrash(trash: Trash) {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteTrash(trash)
-                setStateEvent(MainStateEvent.FetchTrashEvents)
+                setStateEvent(MainStateEvent.TrashEvents)
             }
         }
     }
 
     fun deleteAllTrash() {
-        executorServiceModule.withSingleThread().submit {
+        myExecutors.withSingleThread().submit {
             viewModelScope.launch {
                 mainRepository.deleteAllTrash()
-                setStateEvent(MainStateEvent.FetchTrashEvents)
+                setStateEvent(MainStateEvent.TrashEvents)
             }
         }
     }

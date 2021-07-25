@@ -8,7 +8,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Note
 interface NoteDao {
 
     @Query("SELECT * FROM notes")
-    suspend fun liveNotes(): LiveData<List<Note>>
+    fun liveNotes(): LiveData<List<Note>>
 
     @Query("SELECT * FROM notes")
     suspend fun allNotes(): List<Note>
@@ -17,7 +17,7 @@ interface NoteDao {
     suspend fun findNoteById(id: Int): Note
 
     @Query("SELECT * FROM notes WHERE id =:id")
-    suspend fun findNoteByIdLive(id: Int): LiveData<Note>
+    fun findNoteByIdLive(id: Int): LiveData<Note>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNote(note: Note)
