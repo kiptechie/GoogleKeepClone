@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/checkListAction"
+        android:icon="@drawable/ic_outline_check_box_24"
+        android:title="Check List"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/canvasAction"
+        android:icon="@drawable/ic_outline_brush_24"
+        android:title="Canvas"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/audioAction"
+        android:icon="@drawable/ic_outline_mic_none_24"
+        android:title="Audio"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/pictureAction"
+        android:icon="@drawable/ic_outline_image_24"
+        android:title="Picture"
+        app:showAsAction="always" />
+
+</menu>
