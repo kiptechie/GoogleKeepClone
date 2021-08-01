@@ -3,4 +3,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="new_note_floating_action_button_desc">New note floating action button</string>
+    <string name="notes">Notes</string>
+    <string name="reminders">Reminders</string>
+    <string name="labels">Labels</string>
+    <string name="create_new_label">Create new label</string>
+    <string name="archive">Archive</string>
+    <string name="deleted">Deleted</string>
+    <string name="settings">Settings</string>
+    <string name="help_amp_feedback"><![CDATA[Help & Feedback]]></string>
+    <string name="edit_labels">Edit labels</string>
 </resources>
