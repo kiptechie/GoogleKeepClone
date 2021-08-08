@@ -1,5 +1,6 @@
 package com.poetcodes.googlekeepclone.repository.models.entities
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -7,8 +8,10 @@ import androidx.room.TypeConverters
 import com.poetcodes.googlekeepclone.repository.database.converters.ImagesTypeConverter
 import com.poetcodes.googlekeepclone.repository.database.converters.LabelTypeConverter
 import com.poetcodes.googlekeepclone.repository.models.Images
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "notes")
+@Parcelize
 data class Note(
     @PrimaryKey(autoGenerate = true) val id: Int?,
 
@@ -22,4 +25,4 @@ data class Note(
     @ColumnInfo(name = "deletedAt") var deletedAt: String?,
     @ColumnInfo(name = "label") @TypeConverters(LabelTypeConverter::class) var label: Label?,
     @ColumnInfo(name = "backgroundColor") var backgroundColor: String?
-)
+) : Parcelable
