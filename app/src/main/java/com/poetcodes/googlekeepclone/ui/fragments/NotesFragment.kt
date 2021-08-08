@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.KeyboardUtils
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentNotesBinding
 import com.poetcodes.googlekeepclone.repository.DataState
@@ -50,12 +51,14 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
     ): View {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         _mainActivity = requireActivity() as MainActivity
+        mainActivity.showBottomBar(true)
         mainActivity.setOnBottomActionCLickedListener(this)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        KeyboardUtils.hideSoftInput(requireView())
         setupRecycler()
         setUpObservers()
         mainActivity.loadEntity(Entity.NOTE)
@@ -68,13 +71,12 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
     }
 
     private fun showProgress(show: Boolean) {
-        if (_binding == null) {
-            return
-        }
-        if (show) {
-            binding.progressBar.visibility = View.VISIBLE
-        } else {
-            binding.progressBar.visibility = View.GONE
+        if (_binding != null) {
+            if (show) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
         }
     }
 
@@ -82,7 +84,10 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
         mainViewModel.notesDataState.observe(requireActivity(), { notesDataState ->
             when (notesDataState) {
                 is DataState.Error -> {
-                    HelpersUtil.showBottomSnack(binding.root, notesDataState.exception.message)
+                    showProgress(false)
+                    if (_binding != null) {
+                        HelpersUtil.showBottomSnack(binding.root, notesDataState.exception.message)
+                    }
                 }
                 is DataState.Loading -> {
                     showProgress(true)

@@ -88,6 +88,10 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun liveNote(id: Int): LiveData<Note> {
+        return mainRepository.liveNote(id)
+    }
+
     fun addLabel(label: Label) {
         myExecutors.withSingleThread().submit {
             viewModelScope.launch {

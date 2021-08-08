@@ -1,5 +1,6 @@
 package com.poetcodes.googlekeepclone.repository
 
+import androidx.lifecycle.LiveData
 import com.poetcodes.googlekeepclone.repository.database.dao.*
 import com.poetcodes.googlekeepclone.repository.models.entities.*
 import kotlinx.coroutines.flow.flow
@@ -21,6 +22,10 @@ class MainRepository(
         } catch (e: Exception) {
             emit(DataState.Error(e))
         }
+    }
+
+    fun liveNote(id: Int): LiveData<Note> {
+        return noteDao.findNoteByIdLive(id)
     }
 
     suspend fun addNote(note: Note) {

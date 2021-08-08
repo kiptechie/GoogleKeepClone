@@ -1,11 +1,13 @@
 package com.poetcodes.googlekeepclone.ui.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.MaterialToolbar
 import com.poetcodes.googlekeepclone.databinding.ActivityMainBinding
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.MainStateEvent
@@ -18,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels()
     private var onBottomActionClickedListener: OnBottomActionClickedListener? = null
+    private var materialToolbar: MaterialToolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +40,13 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
         binding.materialToolbar.setupWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+        materialToolbar = binding.materialToolbar
+
         setClickListeners()
+    }
+
+    fun getToolbar() : MaterialToolbar? {
+        return materialToolbar
     }
 
     private fun setClickListeners() {
@@ -56,6 +65,18 @@ class MainActivity : AppCompatActivity() {
                 Entity.TRASH -> mainViewModel.setStateEvent(MainStateEvent.TrashEvents)
             }
         }
+    }
+
+    fun showBottomBar(show: Boolean) {
+       runOnUiThread {
+           if (show) {
+               binding.bottomAppBar.visibility = View.VISIBLE
+               binding.newNoteFab.visibility = View.VISIBLE
+           } else {
+               binding.newNoteFab.visibility = View.GONE
+               binding.bottomAppBar.visibility = View.GONE
+           }
+       }
     }
 
     fun setOnBottomActionCLickedListener (listener: OnBottomActionClickedListener) {
