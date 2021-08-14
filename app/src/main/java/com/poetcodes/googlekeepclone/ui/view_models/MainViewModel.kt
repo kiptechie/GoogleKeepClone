@@ -22,6 +22,23 @@ class MainViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    init {
+        cleanNotes()
+    }
+
+    fun cleanNotes() {
+        viewModelScope.launch {
+            val noteDao = mainRepository.noteDao()
+            val notes: List<Note> = noteDao.allNotes()
+            for (note in notes) {
+                if (HelpersUtil.isNewNote(note)) {
+                    noteDao.deleteNote(note)
+                }
+            }
+            setStateEvent(MainStateEvent.NoteEvents)
+        }
+    }
+
     private val _notesDataState: MutableLiveData<DataState<List<Note>>> = MutableLiveData()
     val notesDataState: LiveData<DataState<List<Note>>> get() = _notesDataState
 
@@ -88,7 +105,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun liveNote(id: Int): LiveData<Note> {
+    fun liveNote(id: String): LiveData<Note> {
         return mainRepository.liveNote(id)
     }
 
@@ -128,11 +145,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun addNote(note: Note) {
+    private fun addNote(note: Note) {
+        viewModelScope.launch {
+            mainRepository.addNote(note)
+            setStateEvent(MainStateEvent.NoteEvents)
+        }
+    }
+
+    interface NoteFetchListener {
+        fun onNoteFetch(note: Note)
+    }
+
+    fun fetchNote(newNote: Note, listener: NoteFetchListener) {
         myExecutors.withSingleThread().submit {
             viewModelScope.launch {
-                mainRepository.addNote(note)
-                setStateEvent(MainStateEvent.NoteEvents)
+                mainRepository.addNote(newNote)
+                listener.onNoteFetch(newNote)
             }
         }
     }

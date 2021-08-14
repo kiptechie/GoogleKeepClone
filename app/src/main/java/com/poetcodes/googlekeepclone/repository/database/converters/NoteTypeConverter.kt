@@ -14,7 +14,7 @@ class NoteTypeConverter {
         var myNote = note
         if (myNote == null) {
             myNote = Note(
-                -1,
+                "",
                 "",
                 "",
                 "",

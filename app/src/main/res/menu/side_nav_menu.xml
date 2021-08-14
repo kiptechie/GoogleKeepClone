@@ -18,7 +18,8 @@
         android:title="@string/labels" />
 
 
-    <group android:id="@+id/settings_group"
+    <group
+        android:id="@+id/settings_group"
         android:checkableBehavior="single">
 
         <item

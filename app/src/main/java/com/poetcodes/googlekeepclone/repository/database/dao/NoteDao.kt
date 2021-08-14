@@ -14,10 +14,10 @@ interface NoteDao {
     suspend fun allNotes(): List<Note>
 
     @Query("SELECT * FROM notes WHERE id =:id")
-    suspend fun findNoteById(id: Int): Note
+    suspend fun findNoteById(id: String): Note?
 
     @Query("SELECT * FROM notes WHERE id =:id")
-    fun findNoteByIdLive(id: Int): LiveData<Note>
+    fun findNoteByIdLive(id: String): LiveData<Note>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addNote(note: Note)

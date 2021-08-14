@@ -1,6 +1,8 @@
 package com.poetcodes.googlekeepclone.ui.fragments
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentNotesBinding
 import com.poetcodes.googlekeepclone.repository.DataState
+import com.poetcodes.googlekeepclone.repository.models.NoteEssentials
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
@@ -21,6 +24,9 @@ import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.MyDifferUtil
+import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
+import com.poetcodes.googlekeepclone.utils.comparators.NotesComparator
+import java.util.*
 
 
 /**
@@ -39,11 +45,6 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
 
     private val mainViewModel: MainViewModel by activityViewModels()
     private var notesAdapter: NotesAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        notesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,7 +68,26 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
     private fun setupRecycler() {
         binding.notesRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.notesRecycler.setHasFixedSize(true)
+        notesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
         binding.notesRecycler.adapter = notesAdapter
+        notesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            mainViewModel.cleanNotes()
+        }, 1000)
+    }
+
+    private class NoteAdapterClickListener(fragment: Fragment) : OnNoteClickListener {
+
+        private val notesFragment = fragment
+
+        override fun onNoteClick(note: Note, position: Int) {
+            val bundle = Bundle()
+            bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)
+            Navigation.findNavController(notesFragment.requireView())
+                .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
+        }
+
     }
 
     private fun showProgress(show: Boolean) {
@@ -97,7 +117,8 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
                 }
                 is DataState.Success -> {
                     showProgress(false)
-                    notesAdapter?.submitList(notesDataState.data)
+                    val sortedList: List<Note> = notesDataState.data.sortedWith(NotesComparator())
+                    notesAdapter?.submitList(sortedList)
                     if (_binding != null) {
                         if (notesDataState.data.isEmpty()) {
                             binding.noNotesTv.visibility = View.VISIBLE
@@ -117,9 +138,39 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
             .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
     }
 
+    class NoteFetchListener(fragment: Fragment) : MainViewModel.NoteFetchListener {
+
+        private val notesFragment = fragment
+
+        override fun onNoteFetch(note: Note) {
+            notesFragment.requireActivity().runOnUiThread {
+                val bundle = Bundle()
+                bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)
+                Navigation.findNavController(notesFragment.requireView())
+                    .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
+            }
+        }
+
+    }
+
     override fun onNewNoteClicked() {
-        Navigation.findNavController(requireView())
-            .navigate(R.id.action_notesFragment_to_viewEditNoteFragment)
+        val title = ""
+        val description = ""
+        val currentTime = System.currentTimeMillis().toString()
+        val createdAt = currentTime
+        val updatedAt = currentTime
+        val id = UUID.randomUUID().toString()
+        val noteEssentials = NoteEssentials(
+            id,
+            title,
+            description,
+            createdAt,
+            updatedAt
+        )
+        val noteEntityUtil = NoteEntityUtil.Builder()
+            .withNoteEssentials(noteEssentials)
+            .build()
+        mainViewModel.fetchNote(noteEntityUtil.note, NoteFetchListener(this))
     }
 
     override fun onToDoClicked() {

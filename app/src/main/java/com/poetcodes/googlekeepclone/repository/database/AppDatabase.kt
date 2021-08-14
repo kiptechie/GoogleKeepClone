@@ -17,10 +17,14 @@ import com.poetcodes.googlekeepclone.repository.models.entities.*
         Trash::class,
         Label::class
     ],
-    version = 1
-    //autoMigrations = [AutoMigration(from = 1, to = 2)]
+    version = 2,
+    //autoMigrations = [AutoMigration(from = 2, to = 3)]
 )
-@TypeConverters(ImagesTypeConverter::class, LabelTypeConverter::class, NoteTypeConverter::class)
+@TypeConverters(
+    ImagesTypeConverter::class,
+    LabelTypeConverter::class,
+    NoteTypeConverter::class
+)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun archiveDao(): ArchiveDao

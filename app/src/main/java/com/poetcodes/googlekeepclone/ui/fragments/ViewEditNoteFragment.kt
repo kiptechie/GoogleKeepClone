@@ -15,6 +15,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
+import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
 
 /**
@@ -43,10 +44,12 @@ class ViewEditNoteFragment : Fragment() {
         mainActivity.showBottomBar(false)
         val bundle = arguments
         if (bundle != null) {
-            mainActivity.getToolbar()?.title = "Edit Note"
             note = bundle.getParcelable(ConstantsUtil.NOTE_EXTRA)
-        } else {
-            mainActivity.getToolbar()?.title = "New Note"
+            if (HelpersUtil.isNewNote(note)) {
+                mainActivity.getToolbar()?.title = "New Note"
+            } else {
+                mainActivity.getToolbar()?.title = "Edit Note"
+            }
         }
         return binding.root
     }
@@ -59,7 +62,7 @@ class ViewEditNoteFragment : Fragment() {
 
     private fun initObservers() {
         if (note != null) {
-            note!!.id?.let {
+            note!!.id.let {
                 mainViewModel.liveNote(it).observe(requireActivity(), { liveNote ->
                     note = liveNote
                 })
@@ -104,6 +107,7 @@ class ViewEditNoteFragment : Fragment() {
                             oldNote.title
                         }
                         val noteEssentials = NoteEssentials(
+                            oldNote.id,
                             title,
                             oldNote.description,
                             oldNote.createdAt,
@@ -113,22 +117,6 @@ class ViewEditNoteFragment : Fragment() {
                             .withNoteEssentials(noteEssentials)
                             .build()
                         currentFragment?.mainViewModel?.updateNote(note = noteEntityUtil.note)
-                    } else {
-                        val title: String = p0.toString()
-                        val description = ""
-                        val currentTime = System.currentTimeMillis().toString()
-                        val createdAt = currentTime
-                        val updatedAt = currentTime
-                        val noteEssentials = NoteEssentials(
-                            title,
-                            description,
-                            createdAt,
-                            updatedAt
-                        )
-                        val noteEntityUtil = NoteEntityUtil.Builder()
-                            .withNoteEssentials(noteEssentials)
-                            .build()
-                        currentFragment?.mainViewModel?.addNote(note = noteEntityUtil.note)
                     }
                 }
             }
@@ -159,6 +147,7 @@ class ViewEditNoteFragment : Fragment() {
                             oldNote.title
                         }
                         val noteEssentials = NoteEssentials(
+                            oldNote.id,
                             oldNote.title,
                             description,
                             oldNote.createdAt,
@@ -168,22 +157,6 @@ class ViewEditNoteFragment : Fragment() {
                             .withNoteEssentials(noteEssentials)
                             .build()
                         currentFragment?.mainViewModel?.updateNote(note = noteEntityUtil.note)
-                    } else {
-                        val title = ""
-                        val description = p0.toString()
-                        val currentTime = System.currentTimeMillis().toString()
-                        val createdAt = currentTime
-                        val updatedAt = currentTime
-                        val noteEssentials = NoteEssentials(
-                            title,
-                            description,
-                            createdAt,
-                            updatedAt
-                        )
-                        val noteEntityUtil = NoteEntityUtil.Builder()
-                            .withNoteEssentials(noteEssentials)
-                            .build()
-                        currentFragment?.mainViewModel?.addNote(note = noteEntityUtil.note)
                     }
                 }
             }

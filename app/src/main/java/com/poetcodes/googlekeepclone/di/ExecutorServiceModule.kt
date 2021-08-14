@@ -1,5 +1,8 @@
 package com.poetcodes.googlekeepclone.di
 
+import android.os.Handler
+import android.os.Looper
+import com.poetcodes.googlekeepclone.repository.models.MainThread
 import com.poetcodes.googlekeepclone.repository.models.MultipleThreads
 import com.poetcodes.googlekeepclone.repository.models.SingleThread
 import com.poetcodes.googlekeepclone.utils.MyExecutors
@@ -18,11 +21,13 @@ object ExecutorServiceModule {
     @Provides
     fun provideExecutors(
         singleThread: SingleThread,
-        multipleThreads: MultipleThreads
+        multipleThreads: MultipleThreads,
+        mainThread: MainThread
     ): MyExecutors {
         return MyExecutors(
             singleThread.thread,
-            multipleThreads.threads
+            multipleThreads.threads,
+            mainThread.handler
         )
     }
 
@@ -36,6 +41,12 @@ object ExecutorServiceModule {
     @Provides
     fun provideMultipleThreads(): MultipleThreads {
         return MultipleThreads(Executors.newCachedThreadPool())
+    }
+
+    @Singleton
+    @Provides
+    fun provideMainThread(): MainThread {
+        return MainThread(Handler(Looper.getMainLooper()))
     }
 
 }

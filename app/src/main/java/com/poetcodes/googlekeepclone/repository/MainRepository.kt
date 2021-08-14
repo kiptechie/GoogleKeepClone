@@ -24,12 +24,20 @@ class MainRepository(
         }
     }
 
-    fun liveNote(id: Int): LiveData<Note> {
+    fun liveNote(id: String): LiveData<Note> {
         return noteDao.findNoteByIdLive(id)
+    }
+
+    fun noteDao(): NoteDao {
+        return noteDao
     }
 
     suspend fun addNote(note: Note) {
         noteDao.addNote(note)
+    }
+
+    suspend fun findNoteById(id: String): Note? {
+        return noteDao.findNoteById(id)
     }
 
     suspend fun deleteNote(note: Note) {

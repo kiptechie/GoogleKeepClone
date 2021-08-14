@@ -16,7 +16,7 @@ public class NoteEntityUtil {
     private NoteEntityUtil(@NotNull Builder builder) {
         NoteEssentials noteEssentials = builder.noteEssentials;
         note = new Note(
-                null,
+                noteEssentials.getId(),
                 noteEssentials.getTitle(),
                 noteEssentials.getDescription(),
                 noteEssentials.getCreatedAt(),
@@ -31,7 +31,7 @@ public class NoteEntityUtil {
 
     public NoteEntityUtil(@NotNull Note note) {
         this.note = new Note(
-                null,
+                note.getId(),
                 note.getTitle(),
                 note.getDescription(),
                 note.getCreatedAt(),
@@ -47,7 +47,7 @@ public class NoteEntityUtil {
     public NoteEntityUtil(@NotNull Trash trash) {
         Note mNote = trash.getNote();
         note = new Note(
-                null,
+                mNote.getId(),
                 mNote.getTitle(),
                 mNote.getDescription(),
                 mNote.getCreatedAt(),
@@ -63,7 +63,7 @@ public class NoteEntityUtil {
     public NoteEntityUtil(@NotNull Archive archive) {
         Note mNote = archive.getNote();
         note = new Note(
-                null,
+                mNote.getId(),
                 mNote.getTitle(),
                 mNote.getDescription(),
                 mNote.getCreatedAt(),
