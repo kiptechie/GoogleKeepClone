@@ -24,6 +24,7 @@ class RoomModule {
             AppDatabase::class.java,
             ConstantsUtil.DATABASE_NAME
         )
+            .fallbackToDestructiveMigration()
             .build()
     }
 

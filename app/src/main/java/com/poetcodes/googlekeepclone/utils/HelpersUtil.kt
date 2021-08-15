@@ -4,8 +4,10 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import com.blankj.utilcode.util.SnackbarUtils
+import com.poetcodes.googlekeepclone.repository.models.NoteEssentials
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.utils.mappers.DateMapper
+import java.util.*
 
 class HelpersUtil {
 
@@ -37,6 +39,25 @@ class HelpersUtil {
                 return true
             }
             return note.title == "" && note.description == ""
+        }
+
+        @JvmStatic
+        fun newNote(): Note {
+            val title = ""
+            val description = ""
+            val currentTime = System.currentTimeMillis().toString()
+            val id = UUID.randomUUID().toString()
+            val noteEssentials = NoteEssentials(
+                id,
+                title,
+                description,
+                currentTime,
+                currentTime
+            )
+            val noteEntityUtil = NoteEntityUtil.Builder()
+                .withNoteEssentials(noteEssentials)
+                .build()
+            return noteEntityUtil.note
         }
     }
 

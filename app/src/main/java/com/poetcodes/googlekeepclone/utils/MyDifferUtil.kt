@@ -2,6 +2,7 @@ package com.poetcodes.googlekeepclone.utils
 
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
+import com.poetcodes.googlekeepclone.repository.models.entities.Label
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
 
 object MyDifferUtil {
@@ -24,7 +25,21 @@ object MyDifferUtil {
             }
         }
 
-    var noteAsyncDifferConfig = AsyncDifferConfig.Builder(noteItemCallback)
+    val noteAsyncDifferConfig = AsyncDifferConfig.Builder(noteItemCallback)
+        .build()
+
+    private val labelItemCallback: DiffUtil.ItemCallback<Label> =
+        object : DiffUtil.ItemCallback<Label>() {
+            override fun areItemsTheSame(oldItem: Label, newItem: Label): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(oldItem: Label, newItem: Label): Boolean {
+                return oldItem.name == newItem.name
+            }
+        }
+
+    val labelAsyncDifferConfig = AsyncDifferConfig.Builder(labelItemCallback)
         .build()
 
 }

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/notesFragment"
-        android:name="com.poetcodes.googlekeepclone.ui.fragments.NotesFragment"
+        android:name="com.poetcodes.googlekeepclone.ui.fragments.notes.NotesFragment"
         android:label="Notes"
         tools:layout="@layout/fragment_notes">
         <action
@@ -38,9 +38,13 @@
         tools:layout="@layout/fragment_deleted" />
     <fragment
         android:id="@+id/editAddLabelsFragment"
-        android:name="com.poetcodes.googlekeepclone.ui.fragments.EditAddLabelsFragment"
-        android:label="Add Labels"
-        tools:layout="@layout/fragment_edit_add_labels" />
+        android:name="com.poetcodes.googlekeepclone.ui.fragments.labels.EditAddLabelsFragment"
+        android:label="Edit Labels"
+        tools:layout="@layout/fragment_edit_add_labels">
+        <action
+            android:id="@+id/action_editAddLabelsFragment_to_viewEditNoteFragment"
+            app:destination="@id/viewEditNoteFragment" />
+    </fragment>
     <fragment
         android:id="@+id/labelDetailFragment"
         android:name="com.poetcodes.googlekeepclone.ui.fragments.LabelDetailFragment"
@@ -58,6 +62,9 @@
         <action
             android:id="@+id/action_remindersFragment_to_searchNotesFragment"
             app:destination="@id/searchNotesFragment" />
+        <action
+            android:id="@+id/action_remindersFragment_to_viewEditNoteFragment"
+            app:destination="@id/viewEditNoteFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchNotesFragment"

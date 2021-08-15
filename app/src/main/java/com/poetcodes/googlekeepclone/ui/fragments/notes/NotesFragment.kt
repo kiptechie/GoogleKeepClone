@@ -1,4 +1,4 @@
-package com.poetcodes.googlekeepclone.ui.fragments
+package com.poetcodes.googlekeepclone.ui.fragments.notes
 
 import android.os.Bundle
 import android.os.Handler
@@ -14,9 +14,9 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentNotesBinding
 import com.poetcodes.googlekeepclone.repository.DataState
-import com.poetcodes.googlekeepclone.repository.models.NoteEssentials
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
+import com.poetcodes.googlekeepclone.repository.models.enums.MyFragment
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
 import com.poetcodes.googlekeepclone.ui.adapters.NotesAdapter
 import com.poetcodes.googlekeepclone.ui.adapters.interfaces.OnNoteClickListener
@@ -24,9 +24,7 @@ import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.MyDifferUtil
-import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
 import com.poetcodes.googlekeepclone.utils.comparators.NotesComparator
-import java.util.*
 
 
 /**
@@ -34,7 +32,7 @@ import java.util.*
  * Use the [NotesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActionClickedListener {
+class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedListener {
 
     private var _binding: FragmentNotesBinding? = null
     private var _mainActivity: MainActivity? = null
@@ -75,19 +73,6 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
         handler.postDelayed({
             mainViewModel.cleanNotes()
         }, 1000)
-    }
-
-    private class NoteAdapterClickListener(fragment: Fragment) : OnNoteClickListener {
-
-        private val notesFragment = fragment
-
-        override fun onNoteClick(note: Note, position: Int) {
-            val bundle = Bundle()
-            bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)
-            Navigation.findNavController(notesFragment.requireView())
-                .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
-        }
-
     }
 
     private fun showProgress(show: Boolean) {
@@ -138,39 +123,11 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
             .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
     }
 
-    class NoteFetchListener(fragment: Fragment) : MainViewModel.NoteFetchListener {
-
-        private val notesFragment = fragment
-
-        override fun onNoteFetch(note: Note) {
-            notesFragment.requireActivity().runOnUiThread {
-                val bundle = Bundle()
-                bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)
-                Navigation.findNavController(notesFragment.requireView())
-                    .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
-            }
-        }
-
-    }
-
     override fun onNewNoteClicked() {
-        val title = ""
-        val description = ""
-        val currentTime = System.currentTimeMillis().toString()
-        val createdAt = currentTime
-        val updatedAt = currentTime
-        val id = UUID.randomUUID().toString()
-        val noteEssentials = NoteEssentials(
-            id,
-            title,
-            description,
-            createdAt,
-            updatedAt
+        mainViewModel.fetchNote(
+            HelpersUtil.newNote(),
+            NoteFetchListener(this, MyFragment.NOTES_FRAGMENT)
         )
-        val noteEntityUtil = NoteEntityUtil.Builder()
-            .withNoteEssentials(noteEssentials)
-            .build()
-        mainViewModel.fetchNote(noteEntityUtil.note, NoteFetchListener(this))
     }
 
     override fun onToDoClicked() {
@@ -189,13 +146,6 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
         //TODO("Not yet implemented")
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        notesAdapter = null
-        _mainActivity = null
-    }
-
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -205,6 +155,13 @@ class NotesFragment : Fragment(), OnNoteClickListener, MainActivity.OnBottomActi
          */
         @JvmStatic
         fun newInstance() = NotesFragment()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        notesAdapter = null
+        _mainActivity = null
     }
 
 }

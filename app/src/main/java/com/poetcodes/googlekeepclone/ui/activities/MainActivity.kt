@@ -11,6 +11,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.poetcodes.googlekeepclone.databinding.ActivityMainBinding
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.MainStateEvent
+import com.poetcodes.googlekeepclone.ui.fragments.notes.OnBottomActionClickedListener
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val topLevelDestinations: MutableSet<Int> = HashSet()
         topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.notesFragment)
         topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.remindersFragment)
-        topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.editAddLabelsFragment)
+        // topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.editAddLabelsFragment)
         topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.archiveFragment)
         topLevelDestinations.add(com.poetcodes.googlekeepclone.R.id.deletedFragment)
         val appBarConfiguration = AppBarConfiguration(topLevelDestinations, binding.drawerLayout)
@@ -81,14 +82,6 @@ class MainActivity : AppCompatActivity() {
 
     fun setOnBottomActionCLickedListener (listener: OnBottomActionClickedListener) {
         onBottomActionClickedListener = listener
-    }
-
-    interface OnBottomActionClickedListener {
-        fun onNewNoteClicked()
-        fun onToDoClicked()
-        fun onDrawingCanvasClicked()
-        fun onMicClicked()
-        fun onImageIconClicked()
     }
 
 }

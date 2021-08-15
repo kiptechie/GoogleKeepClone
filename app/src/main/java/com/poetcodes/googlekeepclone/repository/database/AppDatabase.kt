@@ -17,7 +17,7 @@ import com.poetcodes.googlekeepclone.repository.models.entities.*
         Trash::class,
         Label::class
     ],
-    version = 2,
+    version = 3,
     //autoMigrations = [AutoMigration(from = 2, to = 3)]
 )
 @TypeConverters(

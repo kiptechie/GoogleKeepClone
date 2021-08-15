@@ -9,6 +9,6 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "labels")
 @Parcelize
 data class Label(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "name") val name: String
+    @PrimaryKey(autoGenerate = true) val id: Int?,
+    @ColumnInfo(name = "name") var name: String
 ): Parcelable
