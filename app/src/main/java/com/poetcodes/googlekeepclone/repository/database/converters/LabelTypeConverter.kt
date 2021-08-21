@@ -1,9 +1,9 @@
 package com.poetcodes.googlekeepclone.repository.database.converters
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
+import com.poetcodes.googlekeepclone.utils.GsonUtil
 
 class LabelTypeConverter {
 
@@ -13,7 +13,7 @@ class LabelTypeConverter {
         if (myLabel == null) {
             myLabel = Label(-1, "")
         }
-        return gson.toJson(myLabel)
+        return GsonUtil.gsonInstance().toJson(myLabel)
     }
 
     @TypeConverter
@@ -23,11 +23,7 @@ class LabelTypeConverter {
             myLabelString = ""
         }
         val labelType = object : TypeToken<Label?>() {}.type
-        return gson.fromJson(myLabelString, labelType)
-    }
-
-    companion object {
-        val gson = Gson()
+        return GsonUtil.gsonInstance().fromJson(myLabelString, labelType)
     }
 
 }

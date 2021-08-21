@@ -1,11 +1,11 @@
 package com.poetcodes.googlekeepclone.repository.database.converters
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.poetcodes.googlekeepclone.repository.models.Images
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
+import com.poetcodes.googlekeepclone.utils.GsonUtil
 
 class NoteTypeConverter {
 
@@ -26,7 +26,7 @@ class NoteTypeConverter {
                 ""
             )
         }
-        return gson.toJson(myNote)
+        return GsonUtil.gsonInstance().toJson(myNote)
     }
 
     @TypeConverter
@@ -36,11 +36,7 @@ class NoteTypeConverter {
             myNoteString = ""
         }
         val noteType = object : TypeToken<Note?>() {}.type
-        return gson.fromJson(myNoteString, noteType)
-    }
-
-    companion object {
-        val gson = Gson()
+        return GsonUtil.gsonInstance().fromJson(myNoteString, noteType)
     }
 
 }

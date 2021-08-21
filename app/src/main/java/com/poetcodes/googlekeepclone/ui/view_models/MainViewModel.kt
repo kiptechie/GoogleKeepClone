@@ -186,8 +186,8 @@ class MainViewModel @Inject constructor(
                 val noteEntityUtil = NoteEntityUtil(note)
                 val deletedNote = noteEntityUtil.note
                 val dateNow = Date(System.currentTimeMillis())
-                deletedNote.updatedAt = HelpersUtil.dateMapper.toString(dateNow)
-                deletedNote.deletedAt = HelpersUtil.dateMapper.toString(dateNow)
+                deletedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+                deletedNote.deletedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
                 val trash = Trash(
                     null,
                     deletedNote
@@ -234,7 +234,7 @@ class MainViewModel @Inject constructor(
                 val noteEntityUtil = NoteEntityUtil(archive)
                 val archivedNote = noteEntityUtil.note
                 val dateNow = Date(System.currentTimeMillis())
-                archivedNote.updatedAt = HelpersUtil.dateMapper.toString(dateNow)
+                archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
                 deleteNote(archivedNote)
                 setStateEvent(MainStateEvent.ArchiveEvents)
             }
@@ -247,7 +247,7 @@ class MainViewModel @Inject constructor(
                 val noteEntityUtil = NoteEntityUtil(archive)
                 val archivedNote = noteEntityUtil.note
                 val dateNow = Date(System.currentTimeMillis())
-                archivedNote.updatedAt = HelpersUtil.dateMapper.toString(dateNow)
+                archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
                 addNote(archivedNote)
                 setStateEvent(MainStateEvent.ArchiveEvents)
             }

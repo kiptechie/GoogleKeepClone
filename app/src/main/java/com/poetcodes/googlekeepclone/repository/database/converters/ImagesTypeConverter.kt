@@ -1,9 +1,9 @@
 package com.poetcodes.googlekeepclone.repository.database.converters
 
 import androidx.room.TypeConverter
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.poetcodes.googlekeepclone.repository.models.Images
+import com.poetcodes.googlekeepclone.utils.GsonUtil
 
 class ImagesTypeConverter {
 
@@ -13,7 +13,7 @@ class ImagesTypeConverter {
         if (myImages == null) {
             myImages = Images(ArrayList())
         }
-        return gson.toJson(myImages)
+        return GsonUtil.gsonInstance().toJson(myImages)
     }
 
     @TypeConverter
@@ -23,11 +23,7 @@ class ImagesTypeConverter {
             myImagesString = ""
         }
         val imagesType = object : TypeToken<Images?>() {}.type
-        return gson.fromJson(myImagesString, imagesType)
-    }
-
-    companion object {
-        val gson = Gson()
+        return GsonUtil.gsonInstance().fromJson(myImagesString, imagesType)
     }
 
 }
