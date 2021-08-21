@@ -1,4 +1,4 @@
-package com.poetcodes.googlekeepclone.ui.adapters
+package com.poetcodes.googlekeepclone.ui.adapters.notes
 
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
-import com.poetcodes.googlekeepclone.ui.adapters.interfaces.OnNoteClickListener
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 
 class NotesAdapter(config: AsyncDifferConfig<Note>) :

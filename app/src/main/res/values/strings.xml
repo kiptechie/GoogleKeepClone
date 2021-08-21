@@ -16,4 +16,6 @@
     <string name="title">Title</string>
     <string name="note">Note</string>
     <string name="enter_a_label_name">Enter a label name</string>
+    <string name="google">Google</string>
+    <string name="keep_clone">Keep clone</string>
 </resources>

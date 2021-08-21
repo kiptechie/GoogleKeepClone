@@ -15,11 +15,11 @@ import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentNotesBinding
 import com.poetcodes.googlekeepclone.repository.DataState
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
+import com.poetcodes.googlekeepclone.repository.models.enums.CurrentFragment
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
-import com.poetcodes.googlekeepclone.repository.models.enums.MyFragment
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
-import com.poetcodes.googlekeepclone.ui.adapters.NotesAdapter
-import com.poetcodes.googlekeepclone.ui.adapters.interfaces.OnNoteClickListener
+import com.poetcodes.googlekeepclone.ui.adapters.notes.NotesAdapter
+import com.poetcodes.googlekeepclone.ui.adapters.notes.OnNoteClickListener
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
@@ -126,7 +126,7 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
     override fun onNewNoteClicked() {
         mainViewModel.fetchNote(
             HelpersUtil.newNote(),
-            NoteFetchListener(this, MyFragment.NOTES_FRAGMENT)
+            NoteFetchListener(this, CurrentFragment.IS_NOTES_FRAGMENT)
         )
     }
 

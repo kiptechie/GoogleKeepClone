@@ -5,10 +5,10 @@ import android.content.DialogInterface
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
-import com.poetcodes.googlekeepclone.ui.adapters.LabelsAdapter
+import com.poetcodes.googlekeepclone.ui.adapters.labels.LabelItemChangeListener
 
-class EditTextChangeListener(private val editAddLabelsFragment: EditAddLabelsFragment) :
-    LabelsAdapter.EditTextChangeListener {
+class LabelChangeListener(private val editAddLabelsFragment: EditAddLabelsFragment) :
+    LabelItemChangeListener {
 
     override fun onTextChanged(text: String, label: Label) {
         editAddLabelsFragment.onTextChanged(text, label)

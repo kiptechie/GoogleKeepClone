@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         setClickListeners()
     }
 
-    fun getToolbar() : MaterialToolbar? {
+    fun getToolbar(): MaterialToolbar? {
         return materialToolbar
     }
 
@@ -69,18 +69,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showBottomBar(show: Boolean) {
-       runOnUiThread {
-           if (show) {
-               binding.bottomAppBar.visibility = View.VISIBLE
-               binding.newNoteFab.visibility = View.VISIBLE
-           } else {
-               binding.newNoteFab.visibility = View.GONE
-               binding.bottomAppBar.visibility = View.GONE
-           }
-       }
+        runOnUiThread {
+            if (show) {
+                binding.bottomAppBar.visibility = View.VISIBLE
+                binding.newNoteFab.visibility = View.VISIBLE
+            } else {
+                binding.newNoteFab.visibility = View.GONE
+                binding.bottomAppBar.visibility = View.GONE
+            }
+        }
     }
 
-    fun setOnBottomActionCLickedListener (listener: OnBottomActionClickedListener) {
+    fun setOnBottomActionCLickedListener(listener: OnBottomActionClickedListener) {
         onBottomActionClickedListener = listener
     }
 

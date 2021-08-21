@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/notesFragment"
-        android:icon="@drawable/ic_outline_emoji_objects_24"
-        android:title="@string/notes" />
+    <group
+        android:id="@+id/primary_actions"
+        android:checkableBehavior="single">
 
-    <item
-        android:id="@+id/remindersFragment"
-        android:icon="@drawable/ic_outline_notifications_24"
-        android:title="@string/reminders" />
+        <item
+            android:id="@+id/notesFragment"
+            android:icon="@drawable/ic_outline_emoji_objects_24"
+            android:title="@string/notes" />
 
-    <item
-        android:id="@+id/editAddLabelsFragment"
-        android:icon="@drawable/ic_outline_label_24"
-        android:title="@string/labels" />
+        <item
+            android:id="@+id/remindersFragment"
+            android:icon="@drawable/ic_outline_notifications_24"
+            android:title="@string/reminders" />
 
+        <item
+            android:id="@+id/editAddLabelsFragment"
+            android:icon="@drawable/ic_outline_label_24"
+            android:title="@string/labels" />
+
+    </group>
 
     <group
         android:id="@+id/settings_group"
@@ -34,14 +38,18 @@
 
     </group>
 
-    <item
-        android:id="@+id/settingsAction"
-        android:icon="@drawable/ic_outline_settings_24"
-        android:title="@string/settings" />
+    <group
+        android:id="@+id/other_actions"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/settingsAction"
+            android:icon="@drawable/ic_outline_settings_24"
+            android:title="@string/settings" />
 
-    <item
-        android:id="@+id/helpAndFeedbackAction"
-        android:icon="@drawable/ic_outline_help_outline_24"
-        android:title="@string/help_amp_feedback" />
+        <item
+            android:id="@+id/helpAndFeedbackAction"
+            android:icon="@drawable/ic_outline_help_outline_24"
+            android:title="@string/help_amp_feedback" />
+    </group>
 
 </menu>

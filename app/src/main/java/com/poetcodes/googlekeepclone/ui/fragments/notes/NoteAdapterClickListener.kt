@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
-import com.poetcodes.googlekeepclone.ui.adapters.interfaces.OnNoteClickListener
+import com.poetcodes.googlekeepclone.ui.adapters.notes.OnNoteClickListener
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 
 class NoteAdapterClickListener(fragment: Fragment) : OnNoteClickListener {

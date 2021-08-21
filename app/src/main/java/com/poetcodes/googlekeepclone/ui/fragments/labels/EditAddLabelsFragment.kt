@@ -12,14 +12,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentEditAddLabelsBinding
 import com.poetcodes.googlekeepclone.repository.DataState
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
+import com.poetcodes.googlekeepclone.repository.models.enums.CurrentFragment
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
-import com.poetcodes.googlekeepclone.repository.models.enums.MyFragment
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
-import com.poetcodes.googlekeepclone.ui.adapters.LabelsAdapter
+import com.poetcodes.googlekeepclone.ui.adapters.labels.LabelsAdapter
 import com.poetcodes.googlekeepclone.ui.fragments.notes.NoteFetchListener
 import com.poetcodes.googlekeepclone.ui.fragments.notes.OnBottomActionClickedListener
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
@@ -38,7 +37,7 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
     private var labelsAdapter: LabelsAdapter? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private val mainActivity get() = _mainActivity!!
 
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -91,23 +90,6 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
         binding.newNoteEd.setText("")
     }
 
-    private class OnNewNoteEdFocusChange(fragment: EditAddLabelsFragment) :
-        View.OnFocusChangeListener {
-
-        private val mFragment = fragment
-
-        override fun onFocusChange(p0: View?, p1: Boolean) {
-            if (p1) {
-                mFragment.binding.saveNewNoteIv.visibility = View.VISIBLE
-                mFragment.binding.addClearIv.setImageResource(R.drawable.ic_baseline_clear_24)
-            } else {
-                mFragment.binding.saveNewNoteIv.visibility = View.INVISIBLE
-                mFragment.binding.addClearIv.setImageResource(R.drawable.ic_baseline_add_24)
-            }
-        }
-
-    }
-
     private fun setUpObservers() {
         mainViewModel.labelDataState.observe(requireActivity(), { labelDataState ->
             when (labelDataState) {
@@ -143,7 +125,7 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
         binding.labelsRecycler.setHasFixedSize(true)
         labelsAdapter = LabelsAdapter(MyDifferUtil.labelAsyncDifferConfig)
         binding.labelsRecycler.adapter = labelsAdapter
-        labelsAdapter?.setEditTextChangeListener(EditTextChangeListener(this))
+        labelsAdapter?.setEditTextChangeListener(LabelChangeListener(this))
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             mainViewModel.cleanLabels()
@@ -181,7 +163,7 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
     override fun onNewNoteClicked() {
         mainViewModel.fetchNote(
             HelpersUtil.newNote(),
-            NoteFetchListener(this, MyFragment.EDIT_ADD_LABELS_FRAGMENT)
+            NoteFetchListener(this, CurrentFragment.IS_EDIT_ADD_LABELS_FRAGMENT)
         )
     }
 

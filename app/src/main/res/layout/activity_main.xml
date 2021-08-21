@@ -92,6 +92,7 @@
         app:itemTextColor="@color/checked_drawer_selector"
         app:itemIconTint="@color/checked_drawer_selector"
         app:itemBackground="@drawable/checked_drawer_bg_selector"
-        app:menu="@menu/side_nav_menu" />
+        app:menu="@menu/side_nav_menu"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

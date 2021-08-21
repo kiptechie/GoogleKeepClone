@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/checked_drawer_bg_selector.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/checked_drawer_item_bg.xml" value="0.1703125" />
         <entry key="app/src/main/res/drawable/checked_drawer_selector.xml" value="0.1703125" />
         <entry key="app/src/main/res/drawable/outline_border_bg.xml" value="0.3921875" />
