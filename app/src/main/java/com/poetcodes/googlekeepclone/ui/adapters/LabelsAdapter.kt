@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.KeyboardUtils
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
 import timber.log.Timber
@@ -18,65 +19,107 @@ class LabelsAdapter(config: AsyncDifferConfig<Label>) :
     ListAdapter<Label, LabelsAdapter.ViewHolder>(config) {
 
     private var editTextChangeListener: EditTextChangeListener? = null
+    private var editTextsList: ArrayList<EditText> = ArrayList()
 
-    class ViewHolder(view: View, adapter: LabelsAdapter) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View, private val labelsAdapter: LabelsAdapter) :
+        RecyclerView.ViewHolder(view) {
 
         val deleteLabelIv: AppCompatImageView = view.findViewById(R.id.delete_label_iv)
         val saveLabelIv: AppCompatImageView = view.findViewById(R.id.save_edited_note_iv)
-        private val editText: EditText = view.findViewById(R.id.edit_note_ed)
-        private val labelsAdapter = adapter
-
-        init {
-            editText.addTextChangedListener(MyTextWatcher(labelsAdapter, adapterPosition))
-            editText.onFocusChangeListener = MyFocusChangeListener(this)
-        }
+        val editText: EditText = view.findViewById(R.id.edit_note_ed)
 
         fun onBind(label: Label) {
+            editText.addTextChangedListener(MyTextWatcher(labelsAdapter, adapterPosition))
+            editText.onFocusChangeListener = MyFocusChangeListener(
+                this,
+                labelsAdapter,
+            )
             editText.setText(label.name)
+            labelsAdapter.editTextsList.add(editText)
         }
 
     }
 
-    class MyFocusChangeListener(viewHolder: ViewHolder) : View.OnFocusChangeListener {
+    private class MyFocusChangeListener(
+        private val viewHolder: ViewHolder,
+        private val labelsAdapter: LabelsAdapter
+    ) : View.OnFocusChangeListener {
 
         private val deleteLabelIv: AppCompatImageView = viewHolder.deleteLabelIv
         private val saveLabelIv: AppCompatImageView = viewHolder.saveLabelIv
+        private val listener = this.labelsAdapter.editTextChangeListener
 
         override fun onFocusChange(p0: View?, p1: Boolean) {
             if (p1) {
                 deleteLabelIv.setImageResource(R.drawable.ic_outline_delete_24)
+                deleteLabelIv.setOnClickListener {
+                    val label = labelsAdapter.getItem(viewHolder.adapterPosition)
+                    listener?.onDeleteLabelClicked(label)
+                }
                 saveLabelIv.setImageResource(R.drawable.ic_baseline_check_24)
+                saveLabelIv.setOnClickListener {
+                    viewHolder.editText.clearFocus()
+                    saveLabelIv.setImageResource(R.drawable.ic_outline_edit_24)
+                    KeyboardUtils.hideSoftInput(viewHolder.editText)
+                }
             } else {
                 deleteLabelIv.setImageResource(R.drawable.ic_outline_label_24)
+                deleteLabelIv.setOnClickListener {
+                    labelsAdapter.clearAllInputFocus()
+                }
                 saveLabelIv.setImageResource(R.drawable.ic_outline_edit_24)
+                saveLabelIv.setOnClickListener {
+                    viewHolder.editText.requestFocus()
+                    KeyboardUtils.showSoftInput(viewHolder.editText)
+                }
             }
         }
 
     }
 
-    class MyTextWatcher(adapter: LabelsAdapter, position: Int) :
+    fun clearAllInputFocus() {
+        for (editText in editTextsList) {
+            try {
+                editText.clearFocus()
+            } catch (ignore: Exception) {
+
+            }
+        }
+        editTextChangeListener?.onClearAllInputFocus()
+    }
+
+    private class MyTextWatcher(
+        private val labelsAdapter: LabelsAdapter,
+        private val position: Int
+    ) :
         TextWatcher {
 
-        private val mPosition = position
-        private val mAdapter = adapter
-
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            //TODO("Not yet implemented")
+            //Do nothing
         }
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            //TODO("Not yet implemented")
+            //Do nothing
         }
 
         override fun afterTextChanged(p0: Editable?) {
             if (p0 != null && p0.isNotEmpty()) {
-                mAdapter.performTextChange(p0.toString(), mPosition)
+                try {
+                    val label = labelsAdapter.getItem(position)
+                    val newString = p0.toString()
+                    val oldString = label.name
+                    if (newString != oldString) {
+                        labelsAdapter.performTextChange(newString, position)
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
             }
         }
 
     }
 
-    fun performTextChange(text: String, position: Int) {
+    private fun performTextChange(text: String, position: Int) {
         try {
             val label = getItem(position)
             editTextChangeListener?.onTextChanged(text, label)
@@ -91,6 +134,9 @@ class LabelsAdapter(config: AsyncDifferConfig<Label>) :
 
     interface EditTextChangeListener {
         fun onTextChanged(text: String, label: Label)
+        fun onSaveLabelClicked()
+        fun onDeleteLabelClicked(label: Label)
+        fun onClearAllInputFocus()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

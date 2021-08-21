@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:padding="@dimen/margin_16"
     tools:context=".ui.fragments.labels.EditAddLabelsFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/add_clear_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:padding="8dp"
         android:src="@drawable/ic_baseline_add_24"
         app:layout_constraintBottom_toBottomOf="@+id/new_note_ed"
@@ -37,6 +37,7 @@
         android:id="@+id/save_new_note_iv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:padding="8dp"
         android:src="@drawable/ic_baseline_check_24"
         app:layout_constraintBottom_toBottomOf="@+id/new_note_ed"
@@ -51,7 +52,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_note_ed" />
+        app:layout_constraintTop_toBottomOf="@+id/new_note_ed"
+        tools:listitem="@layout/item_label" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

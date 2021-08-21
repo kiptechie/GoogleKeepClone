@@ -39,6 +39,19 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun cleanLabels() {
+        viewModelScope.launch {
+            val labelDao = mainRepository.labelDao()
+            val labels: List<Label> = labelDao.allLabels()
+            for (label in labels) {
+                if (label.name == "") {
+                    labelDao.deleteLabel(label)
+                }
+            }
+            setStateEvent(MainStateEvent.LabelEvents)
+        }
+    }
+
     private val _notesDataState: MutableLiveData<DataState<List<Note>>> = MutableLiveData()
     val notesDataState: LiveData<DataState<List<Note>>> get() = _notesDataState
 

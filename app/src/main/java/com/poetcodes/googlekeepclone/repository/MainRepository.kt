@@ -32,6 +32,10 @@ class MainRepository(
         return noteDao
     }
 
+    fun labelDao(): LabelDao {
+        return labelDao
+    }
+
     suspend fun addNote(note: Note) {
         noteDao.addNote(note)
     }
@@ -141,6 +145,16 @@ class MainRepository(
     }
 
     suspend fun deleteLabel(label: Label) {
+        val notes = noteDao.allNotes()
+        for (note in notes) {
+            val noteLabel = note.label
+            if (noteLabel != null) {
+                if (noteLabel.name == label.name) {
+                    note.label = Label(-1, "")
+                    noteDao.updateNote(note)
+                }
+            }
+        }
         labelDao.deleteLabel(label)
     }
 

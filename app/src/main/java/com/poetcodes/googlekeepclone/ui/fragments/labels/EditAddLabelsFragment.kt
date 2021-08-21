@@ -1,6 +1,8 @@
 package com.poetcodes.googlekeepclone.ui.fragments.labels
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -66,6 +68,9 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
         binding.saveNewNoteIv.setOnClickListener {
             validateEd()
         }
+        binding.addClearIv.setOnClickListener {
+            binding.newNoteEd.setText("")
+        }
     }
 
     private fun validateEd() {
@@ -86,7 +91,8 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
         binding.newNoteEd.setText("")
     }
 
-    class OnNewNoteEdFocusChange(fragment: EditAddLabelsFragment) : View.OnFocusChangeListener {
+    private class OnNewNoteEdFocusChange(fragment: EditAddLabelsFragment) :
+        View.OnFocusChangeListener {
 
         private val mFragment = fragment
 
@@ -138,6 +144,10 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
         labelsAdapter = LabelsAdapter(MyDifferUtil.labelAsyncDifferConfig)
         binding.labelsRecycler.adapter = labelsAdapter
         labelsAdapter?.setEditTextChangeListener(EditTextChangeListener(this))
+        val handler = Handler(Looper.getMainLooper())
+        handler.postDelayed({
+            mainViewModel.cleanLabels()
+        }, 1000)
     }
 
     fun onTextChanged(text: String, label: Label) {
@@ -147,6 +157,14 @@ class EditAddLabelsFragment : Fragment(), OnBottomActionClickedListener {
             label.name = text
             mainViewModel.updateLabel(label)
         }
+    }
+
+    fun deleteLabel(label: Label) {
+        mainViewModel.deleteLabel(label)
+    }
+
+    fun cleanLabels() {
+        mainViewModel.cleanLabels()
     }
 
     companion object {
