@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
 import com.poetcodes.googlekeepclone.R
@@ -25,6 +26,7 @@ import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.MyDifferUtil
 import com.poetcodes.googlekeepclone.utils.comparators.NotesComparator
+import io.paperdb.Paper
 
 
 /**
@@ -38,7 +40,7 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
     private var _mainActivity: MainActivity? = null
 
     // This property is only valid between onCreateView and onDestroyView.
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private val mainActivity get() = _mainActivity!!
 
     private val mainViewModel: MainViewModel by activityViewModels()
@@ -64,7 +66,14 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
     }
 
     private fun setupRecycler() {
-        binding.notesRecycler.layoutManager = LinearLayoutManager(requireContext())
+        val isGrid = Paper.book().read(ConstantsUtil.IS_GRID_PAPER_BOOK, true)
+        if (isGrid) {
+            val gridLayoutManager = GridLayoutManager(requireContext(), 2)
+            binding.notesRecycler.layoutManager = gridLayoutManager
+        } else {
+            val linearLayoutManager = LinearLayoutManager(requireContext())
+            binding.notesRecycler.layoutManager = linearLayoutManager
+        }
         binding.notesRecycler.setHasFixedSize(true)
         notesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
         binding.notesRecycler.adapter = notesAdapter
@@ -73,6 +82,7 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         handler.postDelayed({
             mainViewModel.cleanNotes()
         }, 1000)
+        mainActivity.setLayoutManagerListener(MyLayoutManagerListener(this))
     }
 
     private fun showProgress(show: Boolean) {
@@ -159,6 +169,7 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
 
     override fun onDestroyView() {
         super.onDestroyView()
+        mainActivity.setLayoutManagerListener(null)
         _binding = null
         notesAdapter = null
         _mainActivity = null

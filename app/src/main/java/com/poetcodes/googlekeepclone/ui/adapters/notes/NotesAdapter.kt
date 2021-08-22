@@ -33,13 +33,26 @@ class NotesAdapter(config: AsyncDifferConfig<Note>) :
         }
 
         fun onBind(note: Note) {
+
             if (HelpersUtil.isNewNote(note)) {
                 rootView.visibility = View.GONE
             } else {
                 rootView.visibility = View.VISIBLE
             }
-            titleTv.text = note.title
-            contentTv.text = note.description
+
+            if (note.title != "") {
+                titleTv.visibility = View.VISIBLE
+                titleTv.text = note.title
+            } else {
+                titleTv.visibility = View.GONE
+            }
+
+            if (note.description != "") {
+                contentTv.visibility = View.VISIBLE
+                contentTv.text = note.description
+            } else {
+                contentTv.visibility = View.GONE
+            }
         }
 
     }

@@ -20,6 +20,13 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+### Models
+-keep class com.poetcodes.googlekeepclone.repository.models.** { *; }
+
+### PaperBook
+-keep class * implements java.io.Serializable { *; }
+
+### GLide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule {
  <init>(...);
