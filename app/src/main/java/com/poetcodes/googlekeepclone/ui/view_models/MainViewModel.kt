@@ -124,38 +124,30 @@ class MainViewModel @Inject constructor(
     }
 
     fun addLabel(label: Label) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.addLabel(label)
-                setStateEvent(MainStateEvent.LabelEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.addLabel(label)
+            setStateEvent(MainStateEvent.LabelEvents)
         }
     }
 
     fun updateLabel(label: Label) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.updateLabel(label)
-                setStateEvent(MainStateEvent.LabelEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.updateLabel(label)
+            setStateEvent(MainStateEvent.LabelEvents)
         }
     }
 
     fun deleteLabel(label: Label) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteLabel(label)
-                setStateEvent(MainStateEvent.LabelEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteLabel(label)
+            setStateEvent(MainStateEvent.LabelEvents)
         }
     }
 
     fun deleteAllLabels() {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteAllLabels()
-                setStateEvent(MainStateEvent.LabelEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteAllLabels()
+            setStateEvent(MainStateEvent.LabelEvents)
         }
     }
 
@@ -171,47 +163,53 @@ class MainViewModel @Inject constructor(
     }
 
     fun fetchNote(newNote: Note, listener: NoteFetchListener) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.addNote(newNote)
-                listener.onNoteFetch(newNote)
-            }
+        viewModelScope.launch {
+            mainRepository.addNote(newNote)
+            listener.onNoteFetch(newNote)
         }
     }
 
     fun deleteNote(note: Note) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteNote(note)
-                val noteEntityUtil = NoteEntityUtil(note)
-                val deletedNote = noteEntityUtil.note
-                val dateNow = Date(System.currentTimeMillis())
-                deletedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
-                deletedNote.deletedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
-                val trash = Trash(
-                    null,
-                    deletedNote
-                )
-                addTrash(trash)
-                setStateEvent(MainStateEvent.NoteEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteNote(note)
+            val noteEntityUtil = NoteEntityUtil(note)
+            val deletedNote = noteEntityUtil.note
+            val dateNow = Date(System.currentTimeMillis())
+            deletedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+            deletedNote.deletedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+            val trash = Trash(
+                null,
+                deletedNote
+            )
+            addTrash(trash)
+            setStateEvent(MainStateEvent.NoteEvents)
         }
     }
 
     fun restoreNote(trash: Trash) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                val noteEntityUtil = NoteEntityUtil(trash)
-                val noteToRestore = noteEntityUtil.note
-                addNote(noteToRestore)
-                deleteTrash(trash)
-            }
+        viewModelScope.launch {
+            val noteEntityUtil = NoteEntityUtil(trash)
+            val noteToRestore = noteEntityUtil.note
+            addNote(noteToRestore)
+            deleteTrash(trash)
         }
     }
 
+    fun executorsInstance(): MyExecutors {
+        return myExecutors
+    }
+
     fun updateNote(note: Note) {
-        myExecutors.withSingleThread().submit {
+        viewModelScope.launch {
+            mainRepository.updateNote(note)
+            setStateEvent(MainStateEvent.NoteEvents)
+        }
+    }
+
+    fun pinNote(note: Note?) {
+        if (note != null) {
             viewModelScope.launch {
+                note.isPinned = !note.isPinned
                 mainRepository.updateNote(note)
                 setStateEvent(MainStateEvent.NoteEvents)
             }
@@ -219,128 +217,102 @@ class MainViewModel @Inject constructor(
     }
 
     fun deleteAllNotes() {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteAllNotes()
-                setStateEvent(MainStateEvent.NoteEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteAllNotes()
+            setStateEvent(MainStateEvent.NoteEvents)
         }
     }
 
     fun addArchive(archive: Archive) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.addArchive(archive)
-                val noteEntityUtil = NoteEntityUtil(archive)
-                val archivedNote = noteEntityUtil.note
-                val dateNow = Date(System.currentTimeMillis())
-                archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
-                deleteNote(archivedNote)
-                setStateEvent(MainStateEvent.ArchiveEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.addArchive(archive)
+            val noteEntityUtil = NoteEntityUtil(archive)
+            val archivedNote = noteEntityUtil.note
+            val dateNow = Date(System.currentTimeMillis())
+            archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+            deleteNote(archivedNote)
+            setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }
 
     fun restoreArchive(archive: Archive) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                val noteEntityUtil = NoteEntityUtil(archive)
-                val archivedNote = noteEntityUtil.note
-                val dateNow = Date(System.currentTimeMillis())
-                archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
-                addNote(archivedNote)
-                setStateEvent(MainStateEvent.ArchiveEvents)
-            }
+        viewModelScope.launch {
+            val noteEntityUtil = NoteEntityUtil(archive)
+            val archivedNote = noteEntityUtil.note
+            val dateNow = Date(System.currentTimeMillis())
+            archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+            addNote(archivedNote)
+            setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }
 
     fun deleteArchive(archive: Archive) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteArchive(archive)
-                setStateEvent(MainStateEvent.ArchiveEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteArchive(archive)
+            setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }
 
     fun updateArchive(archive: Archive) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.updateArchive(archive)
-                setStateEvent(MainStateEvent.ArchiveEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.updateArchive(archive)
+            setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }
 
     fun deleteAllArchives() {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteAllArchives()
-                setStateEvent(MainStateEvent.ArchiveEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteAllArchives()
+            setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }
 
     fun addDraft(draft: Draft) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.addDraft(draft)
-                setStateEvent(MainStateEvent.DraftEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.addDraft(draft)
+            setStateEvent(MainStateEvent.DraftEvents)
         }
     }
 
     fun deleteDraft(draft: Draft) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteDraft(draft)
-                setStateEvent(MainStateEvent.DraftEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteDraft(draft)
+            setStateEvent(MainStateEvent.DraftEvents)
         }
     }
 
     fun updateDraft(draft: Draft) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.updateDraft(draft)
-                setStateEvent(MainStateEvent.DraftEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.updateDraft(draft)
+            setStateEvent(MainStateEvent.DraftEvents)
         }
     }
 
     fun deleteAllDrafts() {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteAllDrafts()
-                setStateEvent(MainStateEvent.DraftEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteAllDrafts()
+            setStateEvent(MainStateEvent.DraftEvents)
         }
     }
 
     private fun addTrash(trash: Trash) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.addTrash(trash)
-                setStateEvent(MainStateEvent.TrashEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.addTrash(trash)
+            setStateEvent(MainStateEvent.TrashEvents)
         }
     }
 
     fun deleteTrash(trash: Trash) {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteTrash(trash)
-                setStateEvent(MainStateEvent.TrashEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteTrash(trash)
+            setStateEvent(MainStateEvent.TrashEvents)
         }
     }
 
     fun deleteAllTrash() {
-        myExecutors.withSingleThread().submit {
-            viewModelScope.launch {
-                mainRepository.deleteAllTrash()
-                setStateEvent(MainStateEvent.TrashEvents)
-            }
+        viewModelScope.launch {
+            mainRepository.deleteAllTrash()
+            setStateEvent(MainStateEvent.TrashEvents)
         }
     }
 

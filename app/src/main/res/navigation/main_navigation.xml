@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewEditNoteFragment"
-        android:name="com.poetcodes.googlekeepclone.ui.fragments.ViewEditNoteFragment"
+        android:name="com.poetcodes.googlekeepclone.ui.fragments.notes.ViewEditNoteFragment"
         android:label="Edit note"
         tools:layout="@layout/fragment_view_edit_note" />
     <fragment

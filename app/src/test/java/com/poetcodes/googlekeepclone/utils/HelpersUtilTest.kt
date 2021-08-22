@@ -14,7 +14,8 @@ class HelpersUtilTest {
             "",
             "",
             "now",
-            "now now"
+            "now now",
+            false
         )
         val note = NoteEntityUtil.Builder.newInstance()
             .withNoteEssentials(noteEssentials)
@@ -31,7 +32,8 @@ class HelpersUtilTest {
             "Title",
             "Description",
             "then",
-            "then then"
+            "then then",
+            false
         )
         val oldNote = NoteEntityUtil.Builder.newInstance()
             .withNoteEssentials(oldNoteEssentials)
@@ -51,7 +53,8 @@ class HelpersUtilTest {
             title,
             description,
             currentTime,
-            currentTime
+            currentTime,
+            false
         )
         val noteEntityUtil = NoteEntityUtil.Builder()
             .withNoteEssentials(noteEssentials)

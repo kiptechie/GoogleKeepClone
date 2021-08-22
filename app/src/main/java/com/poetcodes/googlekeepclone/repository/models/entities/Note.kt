@@ -24,5 +24,6 @@ data class Note(
     @ColumnInfo(name = "images") @TypeConverters(ImagesTypeConverter::class) var images: Images?,
     @ColumnInfo(name = "deletedAt") var deletedAt: String?,
     @ColumnInfo(name = "label") @TypeConverters(LabelTypeConverter::class) var label: Label?,
-    @ColumnInfo(name = "backgroundColor") var backgroundColor: String?
+    @ColumnInfo(name = "backgroundColor") var backgroundColor: String?,
+    @ColumnInfo(name = "isPinned") var isPinned: Boolean
 ) : Parcelable

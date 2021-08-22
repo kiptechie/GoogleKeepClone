@@ -1,14 +1,13 @@
-package com.poetcodes.googlekeepclone.ui.fragments
+package com.poetcodes.googlekeepclone.ui.fragments.notes
 
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.blankj.utilcode.util.KeyboardUtils
+import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentViewEditNoteBinding
 import com.poetcodes.googlekeepclone.repository.models.NoteEssentials
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
@@ -17,6 +16,7 @@ import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
+import timber.log.Timber
 
 /**
  * A simple [Fragment] subclass.
@@ -35,6 +35,62 @@ class ViewEditNoteFragment : Fragment() {
     private val mainViewModel: MainViewModel by activityViewModels()
     private var note: Note? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu.clear()
+        inflater.inflate(R.menu.edit_note_menu, menu)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        try {
+            // if note pinned set filled icon
+            val pinNoteItem: MenuItem? = menu.findItem(R.id.actionPin)
+            if (note?.isPinned!!) {
+                pinNoteItem?.setIcon(R.drawable.ic_baseline_push_pin_filled_24)
+            } else {
+                pinNoteItem?.setIcon(R.drawable.ic_outline_push_pin_24)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.actionPin -> {
+                pinNote()
+                true
+            }
+            R.id.actionReminder -> {
+                initReminder()
+                true
+            }
+            R.id.actionArchive -> {
+                archiveNote()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun archiveNote() {
+        //TODO("Not yet implemented")
+    }
+
+    private fun initReminder() {
+        //TODO("Not yet implemented")
+    }
+
+    private fun pinNote() {
+        mainViewModel.pinNote(note)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,6 +106,7 @@ class ViewEditNoteFragment : Fragment() {
             } else {
                 mainActivity.getToolbar()?.title = "Edit Note"
             }
+            requireActivity().invalidateOptionsMenu()
         }
         return binding.root
     }
@@ -65,6 +122,11 @@ class ViewEditNoteFragment : Fragment() {
             note!!.id.let {
                 mainViewModel.liveNote(it).observe(requireActivity(), { liveNote ->
                     note = liveNote
+                    try {
+                        requireActivity().invalidateOptionsMenu()
+                    } catch (ignore: Exception) {
+
+                    }
                 })
             }
         }
@@ -75,7 +137,9 @@ class ViewEditNoteFragment : Fragment() {
             binding.titleEd.setText(note!!.title)
             binding.contentEd.setText(note!!.description)
         }
-        KeyboardUtils.showSoftInput(binding.contentEd)
+        if (HelpersUtil.isNewNote(note)) {
+            KeyboardUtils.showSoftInput(binding.contentEd)
+        }
         setUpTextWatchers()
     }
 
@@ -111,7 +175,8 @@ class ViewEditNoteFragment : Fragment() {
                             title,
                             oldNote.description,
                             oldNote.createdAt,
-                            System.currentTimeMillis().toString()
+                            System.currentTimeMillis().toString(),
+                            oldNote.isPinned
                         )
                         val noteEntityUtil = NoteEntityUtil.Builder()
                             .withNoteEssentials(noteEssentials)
@@ -151,7 +216,8 @@ class ViewEditNoteFragment : Fragment() {
                             oldNote.title,
                             description,
                             oldNote.createdAt,
-                            System.currentTimeMillis().toString()
+                            System.currentTimeMillis().toString(),
+                            oldNote.isPinned
                         )
                         val noteEntityUtil = NoteEntityUtil.Builder()
                             .withNoteEssentials(noteEssentials)

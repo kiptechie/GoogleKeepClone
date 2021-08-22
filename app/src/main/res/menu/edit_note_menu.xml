@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <item
+        android:id="@+id/actionPin"
+        android:icon="@drawable/ic_outline_push_pin_24"
+        android:title="@string/pin_note"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/actionReminder"
+        android:icon="@drawable/ic_outline_notifications_24"
+        android:title="@string/archive"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/actionArchive"
+        android:icon="@drawable/ic_outline_archive_24"
+        android:title="@string/archive"
+        app:showAsAction="always" />
+
+</menu>

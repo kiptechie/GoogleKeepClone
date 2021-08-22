@@ -44,7 +44,8 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
     private val mainActivity get() = _mainActivity!!
 
     private val mainViewModel: MainViewModel by activityViewModels()
-    private var notesAdapter: NotesAdapter? = null
+    private var normalNotesAdapter: NotesAdapter? = null
+    private var pinnedNotesAdapter: NotesAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,16 +69,22 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
     private fun setupRecycler() {
         val isGrid = Paper.book().read(ConstantsUtil.IS_GRID_PAPER_BOOK, true)
         if (isGrid) {
-            val gridLayoutManager = GridLayoutManager(requireContext(), 2)
-            binding.notesRecycler.layoutManager = gridLayoutManager
+            val pinnedGridLayoutManager = GridLayoutManager(requireContext(), 2)
+            val normalGridLayoutManager = GridLayoutManager(requireContext(), 2)
+            binding.pinnedNotesRecycler.layoutManager = pinnedGridLayoutManager
+            binding.notesRecycler.layoutManager = normalGridLayoutManager
         } else {
-            val linearLayoutManager = LinearLayoutManager(requireContext())
-            binding.notesRecycler.layoutManager = linearLayoutManager
+            val pinnedLinearLayoutManager = LinearLayoutManager(requireContext())
+            val normalLinearLayoutManager = LinearLayoutManager(requireContext())
+            binding.pinnedNotesRecycler.layoutManager = pinnedLinearLayoutManager
+            binding.notesRecycler.layoutManager = normalLinearLayoutManager
         }
-        binding.notesRecycler.setHasFixedSize(true)
-        notesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
-        binding.notesRecycler.adapter = notesAdapter
-        notesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
+        normalNotesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
+        pinnedNotesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
+        binding.notesRecycler.adapter = normalNotesAdapter
+        binding.pinnedNotesRecycler.adapter = pinnedNotesAdapter
+        pinnedNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
+        normalNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             mainViewModel.cleanNotes()
@@ -111,14 +118,40 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
                     }
                 }
                 is DataState.Success -> {
-                    showProgress(false)
-                    val sortedList: List<Note> = notesDataState.data.sortedWith(NotesComparator())
-                    notesAdapter?.submitList(sortedList)
                     if (_binding != null) {
-                        if (notesDataState.data.isEmpty()) {
-                            binding.noNotesTv.visibility = View.VISIBLE
-                        } else {
-                            binding.noNotesTv.visibility = View.GONE
+                        showProgress(false)
+                        mainViewModel.executorsInstance().withMultipleThreads().submit {
+                            val pinnedNotes: ArrayList<Note> = ArrayList()
+                            val normalNotes: ArrayList<Note> = ArrayList()
+                            for (note in notesDataState.data) {
+                                if (note.isPinned) {
+                                    pinnedNotes.add(note)
+                                } else {
+                                    normalNotes.add(note)
+                                }
+                            }
+                            val sortedPinnedNotes: List<Note> =
+                                pinnedNotes.sortedWith(NotesComparator())
+                            val sortedNormalNotes: List<Note> =
+                                normalNotes.sortedWith(NotesComparator())
+                            requireActivity().runOnUiThread {
+                                if (sortedPinnedNotes.isEmpty()) {
+                                    binding.pinnedSubheadTv.visibility = View.GONE
+                                    binding.pinnedNotesRecycler.visibility = View.GONE
+                                    binding.subheadTv.visibility = View.GONE
+                                } else {
+                                    binding.pinnedSubheadTv.visibility = View.VISIBLE
+                                    binding.pinnedNotesRecycler.visibility = View.VISIBLE
+                                    binding.subheadTv.visibility = View.VISIBLE
+                                }
+                                pinnedNotesAdapter?.submitList(sortedPinnedNotes)
+                                normalNotesAdapter?.submitList(sortedNormalNotes)
+                                if (notesDataState.data.isEmpty()) {
+                                    binding.noNotesTv.visibility = View.VISIBLE
+                                } else {
+                                    binding.noNotesTv.visibility = View.GONE
+                                }
+                            }
                         }
                     }
                 }
@@ -171,7 +204,7 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         super.onDestroyView()
         mainActivity.setLayoutManagerListener(null)
         _binding = null
-        notesAdapter = null
+        normalNotesAdapter = null
         _mainActivity = null
     }
 

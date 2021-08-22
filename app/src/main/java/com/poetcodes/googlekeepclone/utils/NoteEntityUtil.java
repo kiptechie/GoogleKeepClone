@@ -25,7 +25,8 @@ public class NoteEntityUtil {
                 builder.images,
                 builder.deletedAt,
                 builder.label,
-                builder.backgroundColor
+                builder.backgroundColor,
+                noteEssentials.isPinned()
         );
     }
 
@@ -40,7 +41,8 @@ public class NoteEntityUtil {
                 note.getImages(),
                 note.getDeletedAt(),
                 note.getLabel(),
-                note.getBackgroundColor()
+                note.getBackgroundColor(),
+                note.isPinned()
         );
     }
 
@@ -56,7 +58,8 @@ public class NoteEntityUtil {
                 mNote.getImages(),
                 null,
                 mNote.getLabel(),
-                mNote.getBackgroundColor()
+                mNote.getBackgroundColor(),
+                mNote.isPinned()
         );
     }
 
@@ -72,7 +75,8 @@ public class NoteEntityUtil {
                 mNote.getImages(),
                 mNote.getDeletedAt(),
                 mNote.getLabel(),
-                mNote.getBackgroundColor()
+                mNote.getBackgroundColor(),
+                mNote.isPinned()
         );
     }
 

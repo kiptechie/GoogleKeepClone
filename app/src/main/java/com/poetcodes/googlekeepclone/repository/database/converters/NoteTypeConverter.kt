@@ -23,7 +23,8 @@ class NoteTypeConverter {
                 Images(ArrayList()),
                 "",
                 Label(-1, ""),
-                ""
+                "",
+                false
             )
         }
         return GsonUtil.gsonInstance().toJson(myNote)

@@ -58,7 +58,8 @@ object HelpersUtil {
             title,
             description,
             currentTime,
-            currentTime
+            currentTime,
+            false
         )
         val noteEntityUtil = NoteEntityUtil.Builder()
             .withNoteEssentials(noteEssentials)

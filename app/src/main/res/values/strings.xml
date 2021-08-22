@@ -19,4 +19,7 @@
     <string name="google">Google</string>
     <string name="keep_clone">Keep clone</string>
     <string name="switch_layout">Switch layout</string>
+    <string name="pin_note">Pin Note</string>
+    <string name="pinned_caps">PINNED</string>
+    <string name="others_caps">OTHERS</string>
 </resources>
