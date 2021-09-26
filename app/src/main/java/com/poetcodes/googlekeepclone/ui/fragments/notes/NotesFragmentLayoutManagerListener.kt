@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.poetcodes.googlekeepclone.ui.activities.LayoutManagerChangeListener
 
-class MyLayoutManagerListener(private val notesFragment: NotesFragment) :
+class NotesFragmentLayoutManagerListener(private val notesFragment: NotesFragment) :
     LayoutManagerChangeListener {
     override fun onChange(isGrid: Boolean) {
         if (isGrid) {

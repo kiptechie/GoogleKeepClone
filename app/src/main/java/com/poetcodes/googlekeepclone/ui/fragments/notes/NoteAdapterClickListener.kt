@@ -8,15 +8,22 @@ import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.ui.adapters.notes.OnNoteClickListener
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 
-class NoteAdapterClickListener(fragment: Fragment) : OnNoteClickListener {
-
-    private val notesFragment = fragment
+class NoteAdapterClickListener(
+    private val fragment: Fragment,
+    private val fromArchives: Boolean
+) : OnNoteClickListener {
 
     override fun onNoteClick(note: Note, position: Int) {
         val bundle = Bundle()
         bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)
-        Navigation.findNavController(notesFragment.requireView())
-            .navigate(R.id.action_notesFragment_to_viewEditNoteFragment, bundle)
+        bundle.putBoolean(ConstantsUtil.FROM_ARCHIVES, fromArchives)
+        val id = if (fromArchives) {
+            R.id.action_archiveFragment_to_viewEditNoteFragment
+        } else {
+            R.id.action_notesFragment_to_viewEditNoteFragment
+        }
+        Navigation.findNavController(fragment.requireView())
+            .navigate(id, bundle)
     }
 
 }

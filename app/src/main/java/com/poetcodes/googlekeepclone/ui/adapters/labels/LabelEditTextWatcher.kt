@@ -2,6 +2,7 @@ package com.poetcodes.googlekeepclone.ui.adapters.labels
 
 import android.text.Editable
 import android.text.TextWatcher
+import io.sentry.Sentry
 import timber.log.Timber
 
 class LabelEditTextWatcher(
@@ -29,6 +30,7 @@ class LabelEditTextWatcher(
                 }
             } catch (e: Exception) {
                 Timber.e(e)
+                Sentry.captureException(e)
             }
         }
     }

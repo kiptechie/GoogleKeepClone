@@ -8,6 +8,6 @@ import com.poetcodes.googlekeepclone.repository.database.converters.NoteTypeConv
 
 @Entity(tableName = "archives")
 data class Archive(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    @ColumnInfo(name = "note") @TypeConverters(NoteTypeConverter::class) val note: Note
+    @PrimaryKey(autoGenerate = true) val id: Int?,
+    @ColumnInfo(name = "note") @TypeConverters(NoteTypeConverter::class) var note: Note
 )

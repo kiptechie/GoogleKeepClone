@@ -3,6 +3,7 @@ package com.poetcodes.googlekeepclone.repository
 import androidx.lifecycle.LiveData
 import com.poetcodes.googlekeepclone.repository.database.dao.*
 import com.poetcodes.googlekeepclone.repository.models.entities.*
+import io.sentry.Sentry
 import kotlinx.coroutines.flow.flow
 
 class MainRepository(
@@ -21,6 +22,7 @@ class MainRepository(
             emit(DataState.Success(notes))
         } catch (e: Exception) {
             emit(DataState.Error(e))
+            Sentry.captureException(e)
         }
     }
 
@@ -63,7 +65,12 @@ class MainRepository(
             emit(DataState.Success(archives))
         } catch (e: Exception) {
             emit(DataState.Error(e))
+            Sentry.captureException(e)
         }
+    }
+
+    suspend fun archivesList(): List<Archive> {
+        return archiveDao.allArchives()
     }
 
     suspend fun addArchive(archive: Archive) {
@@ -89,6 +96,7 @@ class MainRepository(
             emit(DataState.Success(drafts))
         } catch (e: Exception) {
             emit(DataState.Error(e))
+            Sentry.captureException(e)
         }
     }
 
@@ -115,6 +123,7 @@ class MainRepository(
             emit(DataState.Success(trash))
         } catch (e: Exception) {
             emit(DataState.Error(e))
+            Sentry.captureException(e)
         }
     }
 
@@ -137,6 +146,7 @@ class MainRepository(
             emit(DataState.Success(labels))
         } catch (e: Exception) {
             emit(DataState.Error(e))
+            Sentry.captureException(e)
         }
     }
 

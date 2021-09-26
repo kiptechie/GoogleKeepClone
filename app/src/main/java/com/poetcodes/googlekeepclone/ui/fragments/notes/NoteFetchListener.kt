@@ -27,6 +27,9 @@ class NoteFetchListener(
                 CurrentFragment.IS_REMINDERS_FRAGMENT -> {
                     R.id.action_remindersFragment_to_viewEditNoteFragment
                 }
+                CurrentFragment.IS_ARCHIVE_FRAGMENT -> {
+                    R.id.action_archiveFragment_to_viewEditNoteFragment
+                }
             }
             val bundle = Bundle()
             bundle.putParcelable(ConstantsUtil.NOTE_EXTRA, note)

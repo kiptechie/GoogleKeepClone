@@ -5,6 +5,7 @@ import com.poetcodes.googlekeepclone.repository.DataState
 import com.poetcodes.googlekeepclone.repository.MainRepository
 import com.poetcodes.googlekeepclone.repository.models.entities.*
 import com.poetcodes.googlekeepclone.ui.MainStateEvent
+import com.poetcodes.googlekeepclone.ui.fragments.archives.ArchiveAddListener
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
 import com.poetcodes.googlekeepclone.utils.MyExecutors
 import com.poetcodes.googlekeepclone.utils.NoteEntityUtil
@@ -235,14 +236,34 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun restoreArchive(archive: Archive) {
+    fun addArchive(archive: Archive, listener: ArchiveAddListener) {
         viewModelScope.launch {
+            mainRepository.addArchive(archive)
             val noteEntityUtil = NoteEntityUtil(archive)
             val archivedNote = noteEntityUtil.note
             val dateNow = Date(System.currentTimeMillis())
             archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
-            addNote(archivedNote)
+            deleteNote(archivedNote)
             setStateEvent(MainStateEvent.ArchiveEvents)
+            executorsInstance().withHandler().post {
+                listener.archiveAdded(archive)
+            }
+        }
+    }
+
+    fun unarchive(note: Note) {
+        viewModelScope.launch {
+            val archives = mainRepository.archivesList()
+            for (archive in archives) {
+                if (archive.note.id == note.id) {
+                    mainRepository.deleteArchive(archive);
+                }
+            }
+            val dateNow = Date(System.currentTimeMillis())
+            note.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
+            addNote(note)
+            setStateEvent(MainStateEvent.ArchiveEvents)
+            setStateEvent(MainStateEvent.NoteEvents)
         }
     }
 
@@ -253,9 +274,15 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun updateArchive(archive: Archive) {
+    fun updateArchive(note: Note) {
         viewModelScope.launch {
-            mainRepository.updateArchive(archive)
+            val archives = mainRepository.archivesList()
+            for (archive in archives) {
+                if (archive.note.id == note.id) {
+                    archive.note = note
+                    mainRepository.updateArchive(archive)
+                }
+            }
             setStateEvent(MainStateEvent.ArchiveEvents)
         }
     }

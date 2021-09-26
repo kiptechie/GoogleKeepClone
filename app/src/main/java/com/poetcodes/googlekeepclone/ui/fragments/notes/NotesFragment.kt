@@ -83,13 +83,13 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         pinnedNotesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
         binding.notesRecycler.adapter = normalNotesAdapter
         binding.pinnedNotesRecycler.adapter = pinnedNotesAdapter
-        pinnedNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
-        normalNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this))
+        pinnedNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
+        normalNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             mainViewModel.cleanNotes()
         }, 1000)
-        mainActivity.setLayoutManagerListener(MyLayoutManagerListener(this))
+        mainActivity.setLayoutManagerListener(NotesFragmentLayoutManagerListener(this))
     }
 
     private fun showProgress(show: Boolean) {

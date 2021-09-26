@@ -1,6 +1,7 @@
 package com.poetcodes.googlekeepclone.utils.comparators
 
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
+import io.sentry.Sentry
 import timber.log.Timber
 import java.util.*
 
@@ -18,6 +19,7 @@ class NotesComparator : Comparator<Note> {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            Sentry.captureException(e)
             1
         }
     }

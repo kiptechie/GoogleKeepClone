@@ -24,12 +24,15 @@
         tools:layout="@layout/fragment_view_edit_note" />
     <fragment
         android:id="@+id/archiveFragment"
-        android:name="com.poetcodes.googlekeepclone.ui.fragments.ArchiveFragment"
+        android:name="com.poetcodes.googlekeepclone.ui.fragments.archives.ArchiveFragment"
         android:label="Archive"
         tools:layout="@layout/fragment_archive">
         <action
             android:id="@+id/action_archiveFragment_to_searchNotesFragment"
             app:destination="@id/searchNotesFragment" />
+        <action
+            android:id="@+id/action_archiveFragment_to_viewEditNoteFragment"
+            app:destination="@id/viewEditNoteFragment" />
     </fragment>
     <fragment
         android:id="@+id/deletedFragment"

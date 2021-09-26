@@ -13,6 +13,7 @@
     <string name="help_amp_feedback"><![CDATA[Help & Feedback]]></string>
     <string name="edit_labels">Edit labels</string>
     <string name="no_notes_yet">No Notes yet!</string>
+    <string name="no_archives_yet">No Archives yet!</string>
     <string name="title">Title</string>
     <string name="note">Note</string>
     <string name="enter_a_label_name">Enter a label name</string>

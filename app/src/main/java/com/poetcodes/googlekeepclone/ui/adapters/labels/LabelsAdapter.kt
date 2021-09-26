@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.repository.models.entities.Label
+import io.sentry.Sentry
 import timber.log.Timber
 
 class LabelsAdapter(config: AsyncDifferConfig<Label>) :
@@ -45,8 +46,9 @@ class LabelsAdapter(config: AsyncDifferConfig<Label>) :
         for (editText in editTextsList) {
             try {
                 editText.clearFocus()
-            } catch (ignore: Exception) {
-
+            } catch (e: Exception) {
+                Timber.e(e)
+                Sentry.captureException(e)
             }
         }
         itemChangeListener?.onClearAllInputFocus()
@@ -58,6 +60,7 @@ class LabelsAdapter(config: AsyncDifferConfig<Label>) :
             itemChangeListener?.onTextChanged(text, label)
         } catch (e: Exception) {
             Timber.e(e)
+            Sentry.captureException(e)
         }
     }
 
