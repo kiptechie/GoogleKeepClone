@@ -16,7 +16,7 @@ import com.poetcodes.googlekeepclone.repository.models.enums.CurrentFragment
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
 import com.poetcodes.googlekeepclone.ui.adapters.notes.NotesAdapter
-import com.poetcodes.googlekeepclone.ui.fragments.notes.NoteAdapterClickListener
+import com.poetcodes.googlekeepclone.ui.adapters.notes.NoteAdapterClickListener
 import com.poetcodes.googlekeepclone.ui.fragments.notes.NoteFetchListener
 import com.poetcodes.googlekeepclone.ui.fragments.notes.OnBottomActionClickedListener
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel

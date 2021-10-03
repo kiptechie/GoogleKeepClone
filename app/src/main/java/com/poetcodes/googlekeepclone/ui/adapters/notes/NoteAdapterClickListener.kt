@@ -1,11 +1,10 @@
-package com.poetcodes.googlekeepclone.ui.fragments.notes
+package com.poetcodes.googlekeepclone.ui.adapters.notes
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
-import com.poetcodes.googlekeepclone.ui.adapters.notes.OnNoteClickListener
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 
 class NoteAdapterClickListener(
