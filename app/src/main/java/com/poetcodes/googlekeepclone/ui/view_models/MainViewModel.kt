@@ -233,6 +233,7 @@ class MainViewModel @Inject constructor(
             archivedNote.updatedAt = HelpersUtil.dateMapperInstance().toString(dateNow)
             deleteNote(archivedNote)
             setStateEvent(MainStateEvent.ArchiveEvents)
+            setStateEvent(MainStateEvent.NoteEvents)
         }
     }
 
