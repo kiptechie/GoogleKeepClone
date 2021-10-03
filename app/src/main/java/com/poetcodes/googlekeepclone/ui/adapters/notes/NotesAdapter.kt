@@ -16,6 +16,7 @@ class NotesAdapter(config: AsyncDifferConfig<Note>) :
     ListAdapter<Note, NotesAdapter.ViewHolder>(config) {
 
     private var noteClickListener: OnNoteClickListener? = null
+    private var noteNoteSwipeListener: OnNoteSwipeListener? = null
 
     class ViewHolder(view: View, adapter: NotesAdapter) : RecyclerView.ViewHolder(view) {
 
@@ -63,6 +64,15 @@ class NotesAdapter(config: AsyncDifferConfig<Note>) :
 
     fun setOnNoteClickListener(onNoteClickListener: OnNoteClickListener) {
         noteClickListener = onNoteClickListener
+    }
+
+    fun setOnNoteSwipeListener(onNoteSwipeListener: OnNoteSwipeListener) {
+        noteNoteSwipeListener = onNoteSwipeListener
+    }
+
+    fun performNoteArchive(position: Int) {
+        val note = getItem(position)
+        noteNoteSwipeListener?.archiveNote(note)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
