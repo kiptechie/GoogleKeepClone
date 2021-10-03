@@ -6,7 +6,9 @@
         <entry key="app/src/main/res/drawable/checked_drawer_bg_selector.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/checked_drawer_item_bg.xml" value="0.1703125" />
         <entry key="app/src/main/res/drawable/checked_drawer_selector.xml" value="0.1703125" />
+        <entry key="app/src/main/res/drawable/note_selector_bg.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/outline_border_bg.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable/selected_outline_border_bg.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable/un_checked_drawer_item_bg.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.35648148148148145" />
         <entry key="app/src/main/res/layout/fragment_archive.xml" value="0.37604166666666666" />
@@ -16,6 +18,7 @@
         <entry key="app/src/main/res/layout/header_navigation_drawer.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_label.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/item_note.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/notes_selection_toolbar.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/bottom_bar_menu.xml" value="0.36203703703703705" />
         <entry key="app/src/main/res/menu/edit_note_menu.xml" value="0.33" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.37604166666666666" />

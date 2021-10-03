@@ -217,6 +217,17 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun pinNotes(notes: List<Note>) {
+        viewModelScope.launch {
+            for (note in notes) {
+                note.isPinned = true
+                mainRepository.updateNote(note)
+            }
+            setStateEvent(MainStateEvent.NoteEvents)
+        }
+
+    }
+
     fun deleteAllNotes() {
         viewModelScope.launch {
             mainRepository.deleteAllNotes()

@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -103,6 +106,29 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         val pinnedItemTouchHelper = ItemTouchHelper(SwipeToArchiveCallback(pinnedNotesAdapter))
         normalItemTouchHelper.attachToRecyclerView(binding.notesRecycler)
         pinnedItemTouchHelper.attachToRecyclerView(binding.pinnedNotesRecycler)
+        val normalTracker = SelectionTracker.Builder(
+            "normalSelection",
+            binding.notesRecycler,
+            MyNotesItemKeyProvider(binding.notesRecycler),
+            MyNotesDetailLookup(binding.notesRecycler),
+            StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(
+            SelectionPredicates.createSelectAnything()
+        ).build()
+        mainActivity.setNormalSelectionTracker(normalTracker)
+        normalNotesAdapter?.setItemSelectionTracker(normalTracker)
+        val pinnedTracker = SelectionTracker.Builder(
+            "pinnedSelection",
+            binding.pinnedNotesRecycler,
+            MyNotesItemKeyProvider(binding.pinnedNotesRecycler),
+            MyNotesDetailLookup(binding.pinnedNotesRecycler),
+            StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(
+            SelectionPredicates.createSelectAnything()
+        ).build()
+        mainActivity.setPinnedSelectionTracker(pinnedTracker)
+        pinnedNotesAdapter?.setItemSelectionTracker(pinnedTracker)
+        itemSelectionTrackerObservers(normalTracker, pinnedTracker)
         pinnedNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
         pinnedNotesAdapter?.setOnNoteSwipeListener(NoteAdapterSwipeListener(this))
         normalNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
@@ -112,6 +138,33 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
             mainViewModel.cleanNotes()
         }, 1000)
         mainActivity.setLayoutManagerListener(NotesFragmentLayoutManagerListener(this))
+    }
+
+    private fun itemSelectionTrackerObservers(
+        normalTracker: SelectionTracker<Long>,
+        pinnedTracker: SelectionTracker<Long>
+    ) {
+        normalTracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    val itemsSelected = normalTracker.selection.size()
+                    mainActivity.showSelectionToolBar(itemsSelected > 0)
+                    mainActivity.updateSelectionCount(itemsSelected)
+                    mainActivity.setSelectedNotes(normalNotesAdapter!!.getSelectedNotes())
+                }
+            })
+        pinnedTracker.addObserver(
+            object : SelectionTracker.SelectionObserver<Long>() {
+                override fun onSelectionChanged() {
+                    super.onSelectionChanged()
+                    val itemsSelected = pinnedTracker.selection.size()
+                    mainActivity.showSelectionToolBar(itemsSelected > 0)
+                    mainActivity.updateSelectionCount(itemsSelected)
+                    mainActivity.setSelectedNotes(normalNotesAdapter!!.getSelectedNotes())
+                }
+            })
+
     }
 
     private fun showProgress(show: Boolean) {

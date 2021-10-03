@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@drawable/outline_border_bg">
+    android:background="@drawable/note_item_bg">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/note_bg"

@@ -11,9 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.selection.SelectionTracker
 import com.google.android.material.appbar.MaterialToolbar
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.ActivityMainBinding
+import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.MainStateEvent
 import com.poetcodes.googlekeepclone.ui.fragments.notes.OnBottomActionClickedListener
@@ -31,6 +33,9 @@ class MainActivity : AppCompatActivity() {
     private var onBottomActionClickedListener: OnBottomActionClickedListener? = null
     private var materialToolbar: MaterialToolbar? = null
     private var layoutManagerChangeListener: LayoutManagerChangeListener? = null
+    private var normalTracker: SelectionTracker<Long>? = null
+    private var pinnedTracker: SelectionTracker<Long>? = null
+    private var selectedNotes: List<Note>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,10 +65,63 @@ class MainActivity : AppCompatActivity() {
         handler.postDelayed({
             invalidateOptionsMenu()
         }, 500)
+        setSelectionToolbarClickListeners()
+    }
+
+    private fun setSelectionToolbarClickListeners() {
+        binding.noteSelectionToolbarHolder.cancelSelection.setOnClickListener {
+            // cancel all selections
+            clearAllSelections()
+        }
+        binding.noteSelectionToolbarHolder.colorBtn.setOnClickListener {
+            // set colors
+        }
+        binding.noteSelectionToolbarHolder.labelBtn.setOnClickListener {
+            // add labels
+        }
+        binding.noteSelectionToolbarHolder.moreOptionsBtn.setOnClickListener {
+            // show more options
+        }
+        binding.noteSelectionToolbarHolder.pinBtn.setOnClickListener {
+            // pin notes
+            if (selectedNotes != null) {
+                mainViewModel.pinNotes(selectedNotes!!)
+                clearAllSelections()
+            }
+        }
+    }
+
+    private fun clearAllSelections() {
+        normalTracker?.clearSelection()
+        pinnedTracker?.clearSelection()
     }
 
     fun getBinding(): ActivityMainBinding {
-        return binding;
+        return binding
+    }
+
+    fun setNormalSelectionTracker(normalTracker: SelectionTracker<Long>) {
+        this.normalTracker = normalTracker
+    }
+
+    fun setSelectedNotes(notes: List<Note>) {
+        selectedNotes = notes
+    }
+
+    fun setPinnedSelectionTracker(pinnedTracker: SelectionTracker<Long>) {
+        this.pinnedTracker = pinnedTracker
+    }
+
+    fun updateSelectionCount(count: Int) {
+        binding.noteSelectionToolbarHolder.selectionCountTv.text = count.toString()
+    }
+
+    fun showSelectionToolBar(show: Boolean) {
+        if (show) {
+            binding.noteSelectionToolbarHolder.root.visibility = View.VISIBLE
+        } else {
+            binding.noteSelectionToolbarHolder.root.visibility = View.GONE
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
