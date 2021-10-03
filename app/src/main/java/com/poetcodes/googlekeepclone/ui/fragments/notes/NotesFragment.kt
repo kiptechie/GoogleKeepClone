@@ -10,17 +10,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.KeyboardUtils
+import com.google.android.material.snackbar.Snackbar
 import com.poetcodes.googlekeepclone.R
 import com.poetcodes.googlekeepclone.databinding.FragmentNotesBinding
 import com.poetcodes.googlekeepclone.repository.DataState
+import com.poetcodes.googlekeepclone.repository.models.entities.Archive
 import com.poetcodes.googlekeepclone.repository.models.entities.Note
 import com.poetcodes.googlekeepclone.repository.models.enums.CurrentFragment
 import com.poetcodes.googlekeepclone.repository.models.enums.Entity
 import com.poetcodes.googlekeepclone.ui.activities.MainActivity
-import com.poetcodes.googlekeepclone.ui.adapters.notes.NotesAdapter
-import com.poetcodes.googlekeepclone.ui.adapters.notes.OnNoteClickListener
+import com.poetcodes.googlekeepclone.ui.adapters.notes.*
 import com.poetcodes.googlekeepclone.ui.view_models.MainViewModel
 import com.poetcodes.googlekeepclone.utils.ConstantsUtil
 import com.poetcodes.googlekeepclone.utils.HelpersUtil
@@ -66,6 +68,20 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         mainActivity.loadEntity(Entity.NOTE)
     }
 
+    fun onNoteSwipe(note: Note) {
+        val archive = Archive(
+            null,
+            note
+        )
+        mainViewModel.addArchive(archive)
+        val snackbar: Snackbar = Snackbar.make(
+            binding.root, "Note archived!",
+            Snackbar.LENGTH_LONG
+        )
+        snackbar.setAction("Undo") { mainViewModel.unarchive(note) }
+        snackbar.show()
+    }
+
     private fun setupRecycler() {
         val isGrid = Paper.book().read(ConstantsUtil.IS_GRID_PAPER_BOOK, true)
         if (isGrid) {
@@ -83,8 +99,14 @@ class NotesFragment : Fragment(), OnNoteClickListener, OnBottomActionClickedList
         pinnedNotesAdapter = NotesAdapter(MyDifferUtil.noteAsyncDifferConfig)
         binding.notesRecycler.adapter = normalNotesAdapter
         binding.pinnedNotesRecycler.adapter = pinnedNotesAdapter
+        val normalItemTouchHelper = ItemTouchHelper(SwipeToArchiveCallback(normalNotesAdapter))
+        val pinnedItemTouchHelper = ItemTouchHelper(SwipeToArchiveCallback(pinnedNotesAdapter))
+        normalItemTouchHelper.attachToRecyclerView(binding.notesRecycler)
+        pinnedItemTouchHelper.attachToRecyclerView(binding.pinnedNotesRecycler)
         pinnedNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
+        pinnedNotesAdapter?.setOnNoteSwipeListener(NoteAdapterSwipeListener(this))
         normalNotesAdapter?.setOnNoteClickListener(NoteAdapterClickListener(this, false))
+        normalNotesAdapter?.setOnNoteSwipeListener(NoteAdapterSwipeListener(this))
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             mainViewModel.cleanNotes()
